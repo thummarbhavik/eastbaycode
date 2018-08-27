@@ -1,0 +1,22 @@
+Docker Compose
+
+	Activate interactive command
+	
+	docker-compose.yml 
+		version: '3'
+		services:
+  		web:
+    		build: .
+    		ports:
+    		 - "5000:5000"
+  		redis:
+    		image: "redis:alpine"
+	
+	docker-compose up
+Then
+	docker-compose exec service_name sh
+	
+https://stackoverflow.com/questions/36249744/interactive-shell-using-docker-compose
+
+Mysql
+https://github.com/docker-library/mysql/blob/b39f1e5e4ec82dc8039cecc91dbf34f6c9ae5fb0/8.0/Dockerfile

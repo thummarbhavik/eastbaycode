@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+    #editor {
+    /** Setting height is also important, otherwise editor wont showup**/
+    height: 250px;
+    width: 500px;
+    }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+             <span class="panel-title"></span>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <h4>Ace Editor</h4>
+                <div id="demo" class="col-md-6">
+                        <form id="process" method="POST" action="http://localhost:5001/process">
+                            <div id="editor"></div>
+                            <input type="hidden" id="code" name="code" value="hello" />
+                        <br><br>
+                        <button type="button" class="btn btn-default" onclick="doSubmit();">Submit</button>
+                        </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <br/>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js"
+        type="text/javascript" charset="utf-8"></script>
+        <script>
+        var textarea = $('#content');
+
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/twilight");
+        editor.getSession().setMode("ace/mode/python");
+
+        function doSubmit(){
+            var code = editor.getSession().getValue();
+            document.getElementById("code").value = code;
+            document.getElementById("process").submit();
+            editor.getSession.setValue() = code;
+        }
+
+</script>
+</body>
+</html>
