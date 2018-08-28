@@ -17,12 +17,14 @@
         </div>
         <div class="panel-body">
             <div class="row">
-                <h4>Question: {{problem['Title']}}</h4>
-                <p>{{problem['Question']}}</p>
-                {% for i in problem['Example'] %}
-                <p>Example</p>
-                <p>Input: {{i['input']}}</p>
-                <p>Output: {{i['output']}}</p>
+                <h4>Question: {{problem['title']}}</h4>
+                <p>{{problem['question']}}</p>
+                {% for e in problem['example'] %}
+                <p><b>Example : </b></p>
+                <ul>
+                    <p>Input: {{e['input']}}</p>
+                    <p>Output: {{e['output']}}</p>
+                </ul>
                 {% endfor %}
                 <div id="demo" class="col-md-6">
                         <form id="process" method="POST" action="">
