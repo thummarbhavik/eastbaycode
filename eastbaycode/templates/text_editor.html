@@ -17,7 +17,13 @@
         </div>
         <div class="panel-body">
             <div class="row">
-                <h4>Ace Editor</h4>
+                <h4>Question:</h4>
+                <p>{{problem['Question']}}</p>
+                {% for i in problem['Example'] %}
+                <p>Example</p>
+                <p>Input: {{i['input']}}</p>
+                <p>Output: {{i['output']}}</p>
+                {% endfor %}
                 <div id="demo" class="col-md-6">
                         <form id="process" method="POST" action="">
                             <div id="editor">{{code}}</div>
@@ -25,6 +31,7 @@
                         <br><br>
                         <button type="button" class="btn btn-default" onclick="doSubmit();">Submit</button>
                         </form>
+                        <p>{{result}}</p>
                 </div>
             </div>
         </div>
@@ -47,7 +54,6 @@
             var code = editor.getSession().getValue();
             document.getElementById("code").value = code;
             document.getElementById("process").submit();
-            //editor.getSession.setValue() = code;
         }
 
 </script>
