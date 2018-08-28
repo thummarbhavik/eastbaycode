@@ -9,6 +9,7 @@ def displayTextEditor():
 @app.route("/process", methods=['GET', 'POST'])
 def process():
     code = request.form['code']
+
     # return code
     return render_template("text_editor.html")
 
