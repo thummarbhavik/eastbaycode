@@ -19,8 +19,8 @@
             <div class="row">
                 <h4>Ace Editor</h4>
                 <div id="demo" class="col-md-6">
-                        <form id="process" method="POST" action="http://localhost:5001/process">
-                            <div id="editor"></div>
+                        <form id="process" method="POST" action="">
+                            <div id="editor">{{code}}</div>
                             <input type="hidden" id="code" name="code" value="hello" />
                         <br><br>
                         <button type="button" class="btn btn-default" onclick="doSubmit();">Submit</button>
@@ -47,7 +47,7 @@
             var code = editor.getSession().getValue();
             document.getElementById("code").value = code;
             document.getElementById("process").submit();
-            editor.getSession.setValue() = code;
+            //editor.getSession.setValue() = code;
         }
 
 </script>
