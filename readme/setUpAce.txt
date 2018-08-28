@@ -1,0 +1,30 @@
+https://ace.c9.io/#nav=embedding
+download the file from github: https://github.com/ajaxorg/ace-builds
+
+create a folder static -> js in Flask program
+	eastbaycode - > static -> css
+						   -> js
+				->  templates -> html files
+				->  app.py
+Copy 4 files from ace-builds to static -> js folder:
+	ace.js – it’s the main file of the Ace library,
+	ext-language_tools.js – provides the text autocomplete feature,
+	theme-chrome.js – defines editor styles,
+	mode-python.js  –contain python highlighter.				
+
+Link the *ace.js* file in your HTML page
+create a <div>HTML element and initialize Ace in it:
+	<div id="editor"></div>
+	var aceEditor = ace.edit("editor"); (in javascript)
+	
+Config the ACE: theme, setMode. We choose python for now.
+	editor.setTheme("ace/theme/twilight");
+    editor.getSession().setMode("ace/mode/python");
+    
+Get value of ACE text editor by calling function getValue()
+	editor.getSession().getValue();
+	
+	
+Ref: 
+https://dzone.com/articles/getting-started-with-ace-editor
+https://ace.c9.io/#nav=howto

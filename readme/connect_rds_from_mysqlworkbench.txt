@@ -1,0 +1,18 @@
+Open MySQL Workbench
+	Choose connect Database -> Connect To Database
+	
+Choose Connection Method: 
+	Standard IP/TCP Over SSH
+
+SSH Hostname: ec2-54-177-23-203.us-west-1.compute.amazonaws.com
+(you can find this on EC2 instance Public DNS)
+SSH Username: ec2-user
+SSH Key File: (open the .pem file which Paul sent to you)
+MySQL Hostname: mlbh2h.ccr2bbshqt2i.us-west-1.rds.amazonaws.com
+(you can find this on RDS instance endpoint)
+
+Username: barrybonds
+Password: UShhjkU6
+	
+Ref:
+https://www.youtube.com/watch?v=saX75fTwh0M
