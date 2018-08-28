@@ -27,7 +27,16 @@ DROP TABLE IF EXISTS eastbaycode.problems;
 	solution TEXT,
 	FOREIGN KEY (creator_id) REFERENCES users(id)
 	);
-
+	
+DROP TABLE IF EXISTS eastbaycode.examples;
+	CREATE TABLE examples(
+	id INT NOT NULL auto_increment PRIMARY KEY,
+	input TEXT,
+	output TEXT,
+	problem_id INT,
+	FOREIGN KEY (problem_id) REFERENCES problems(id)	
+	);
+		
 DROP TABLE IF EXISTS eastbaycode.testcases;
 	CREATE TABLE testcases(
 	id INT NOT NULL auto_increment PRIMARY KEY,
@@ -58,6 +67,8 @@ DROP TABLE IF EXISTS eastbaycode.sub_results;
 	FOREIGN KEY (sub_id) REFERENCES submissions(id),
 	FOREIGN KEY (failed_test_id) REFERENCES testcases(id)
 	);
+	
+
 
 	
 
