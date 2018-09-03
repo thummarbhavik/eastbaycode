@@ -11,9 +11,9 @@ def main():
     while True:
         try:
             line = next(lines)
-            s = stringToString(line);
+            # s = stringToString(line);
 
-            ret = sayHello(s)
+            ret = sayHello(line)
 
             out = str(ret);
             print(out)
