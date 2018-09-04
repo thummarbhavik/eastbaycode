@@ -1,5 +1,7 @@
 # eastbaycode
+
 Students coding from a browser
 Bhavik was here
 Hien was here
-Test
+Xinyi was here
+Bansari was here
