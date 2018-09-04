@@ -32,6 +32,7 @@ def getTestCase(id):
     cur, conn = connection()
     query = '''SELECT input from eastbaycode.testcases where problem_id={}'''.format(id)
     cur.execute(query)
+    # input data type is dictionary
     input = [item['input'] for item in cur.fetchall()]
     conn.close()
     return input

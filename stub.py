@@ -8,17 +8,19 @@ def main():
             yield line.strip('\n')
 
     lines = readlines()
-    while True:
-        try:
-            line = next(lines)
-            # s = stringToString(line);
+    with open("output.txt", "w") as out_file:
+        while True:
+            try:
+                line = next(lines)
+                # s = stringToString(line);
 
-            ret = sayHello(line)
+                ret = sayHello(line)
 
-            out = str(ret);
-            print(out)
-        except StopIteration:
-            break
+                out = str(ret);
+                print(out)
+                out_file.write(out)
+            except StopIteration:
+                break
 
 if __name__ == '__main__':
     main()
