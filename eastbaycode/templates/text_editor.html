@@ -1,63 +1,90 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <style>
-    #editor {
-    /** Setting height is also important, otherwise editor wont showup**/
-    height: 250px;
-    width: 500px;
-    }
-    </style>
-</head>
-<body>
-<div class="container">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-             <span class="panel-title"></span>
-        </div>
-        <div class="panel-body">
-            <div class="row">
-                <h4>Question: {{problem['title']}}</h4>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Courses Detaila</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <style>
+        #editor {
+            /** Setting height is also important, otherwise editor wont showup**/
+            height: 300px;
+            /* width: 500px; */
+            margin: 0px 0px 0px 0px;
+            }
+        .container{
+            margin:auto;
+            max-width:900px;
+        }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">EastBayCode</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="course_view.html">Courses</a></li>
+                <li><a href="coffee.html">Problems</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            </ul>
+
+        </nav>
+        <div class="container">
+            <div class="row well">
+                <h4>CS1 -> Assignment 3 -> Problem 3</h4>
+            </div>
+            <div class="row well">
+                <p><strong>Question {{problem['id']}}: {{problem['title']}}</strong></p>
                 <p>{{problem['question']}}</p>
                 {% for e in problem['example'] %}
-                <p><b>Example : </b></p>
+                <p><b>Example {{e['id']}}: </b></p>
                 <ul>
-                    <p>Input: {{e['input']}}</p>
-                    <p>Output: {{e['output']}}</p>
+                    <p><strong>Input:</strong> {{e['input']}}</p>
+                    <p><strong>Output:</strong> {{e['output']}}</p>
                 </ul>
                 {% endfor %}
-                <div id="demo" class="col-md-6">
-                        <form id="process" method="POST" action="">
-                            <div id="editor">{{code}}</div>
-                            <input type="hidden" id="code" name="code" value="hello" />
-                        <br><br>
-                        <button type="button" class="btn btn-default" onclick="doSubmit();">Submit</button>
-                        </form>
-                        <p>{{result}}</p>
-                </div>
             </div>
-        </div>
+            <div class="row">
+                <button class="btn btn-primary" style="width:120px;">Python</button>
+                </div><br>
+            <!-- <div class="row well"> -->
+            <div id="demo">
+                    <form id="process" method="POST" action="">
+                        <div id="editor">{{code}}</div>
+                        <input type="hidden" id="code" name="code" value="hello" />
+                        <div class="row"><br>
+                            <button class="btn btn-primary" type="button" name="custom-test">Custom Test Case</button>
+                            <!-- <button class="btn btn-primary pull-right" type="button" name="run-code" style="width:120px; margin:0 10px">Run Code</button> -->
+                            <button class="btn btn-primary pull-right" type="button" onclick="doSubmit();" style="width:120px;">Submit</button>
+                            <br>
+                        </div>
+                    </form>
+                        <p>{{result}}</p>
+                        <br><br><br><br>
+            </div>
     </div>
-    <br/>
-    <br/>
-</div>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js"
+            type="text/javascript" charset="utf-8"></script>
+            <script>
+            var textarea = $('#content');
 
-<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js"
-        type="text/javascript" charset="utf-8"></script>
-        <script>
-        var textarea = $('#content');
+            var editor = ace.edit("editor");
+            editor.setTheme("ace/theme/twilight");
+            editor.getSession().setMode("ace/mode/python");
 
-        var editor = ace.edit("editor");
-        editor.setTheme("ace/theme/twilight");
-        editor.getSession().setMode("ace/mode/python");
+            function doSubmit(){
+                var code = editor.getSession().getValue();
+                document.getElementById("code").value = code;
+                document.getElementById("process").submit();
+            }
 
-        function doSubmit(){
-            var code = editor.getSession().getValue();
-            document.getElementById("code").value = code;
-            document.getElementById("process").submit();
-        }
-
-</script>
+    </script>
 </body>
+
 </html>
