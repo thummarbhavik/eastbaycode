@@ -15,5 +15,6 @@ def runcode(code, inputs):
                             stdout=PIPE)
 
     output = process.stdout.decode('utf-8')
+
     print(output)
     return output

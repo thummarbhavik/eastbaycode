@@ -13,9 +13,7 @@ def main():
             try:
                 line = next(lines)
                 # s = stringToString(line);
-
                 ret = sayHello(line)
-
                 out = str(ret);
                 print(out)
                 out_file.write(out)
