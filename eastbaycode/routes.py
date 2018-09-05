@@ -1,8 +1,9 @@
-from eastbaycode import app
+import json
 from flask import render_template, request
-from eastbaycode.dbi import *
+from eastbaycode import app
+from eastbaycode.dbi import connection, getProblems, getTestCase
 from eastbaycode.runner import *
-from eastbaycode.msgqueue import *
+from eastbaycode.msgqueue import push_msg, get_result
 
 @app.route("/index")
 def hello():
@@ -19,8 +20,7 @@ def displayTextEditor():
         code = request.form['code']
         # result = runcode(code, inputs) - just for subprocess.run
         # push msg to redis queue
-        msg_sent = {"code": code, "inputs": inputs,"prototype": "def sayHello(s)","handle": 38}
-        msg = '{}'.format(msg_sent)
+        msg = json.dumps({"code": code, "inputs": inputs,"prototype": "def sayHello(s)","handle": 38})
         push_msg(qname="msgQueue", msg=msg)
         result = get_result(qname="msgQueue")
 
