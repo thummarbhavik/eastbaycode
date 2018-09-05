@@ -1,4 +1,5 @@
-FROM python 
+FROM python
 ADD . /code
 WORKDIR /code
-CMD ["./bbt","train","sol.py","input.json","output.json"]
+RUN pip install docker
+CMD ["python","rundocker.py"]
