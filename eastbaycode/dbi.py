@@ -13,10 +13,11 @@ def connection():
 def getProblems(id):
     problem = {}
     cur, conn = connection()
-    query1 = '''SELECT title, content from eastbaycode.problems where id={}'''.format(id)
+    query1 = '''SELECT id, title, content from eastbaycode.problems where id={}'''.format(id)
     query2 = '''SELECT input, output from eastbaycode.examples where problem_id={}'''.format(id)
     cur.execute(query1)
     question = cur.fetchone()
+    problem['id'] = question['id']
     problem['title'] = question['title']
     problem['question'] = question['content']
     cur.execute(query2)
@@ -24,3 +25,11 @@ def getProblems(id):
     problem['example'] = examples
     conn.close()
     return problem
+
+def getTestCase(id):
+    cur, conn = connection()
+    query = '''SELECT input from eastbaycode.testcases where problem_id={}'''.format(id)
+    cur.execute(query)
+    input = [item['input'] for item in cur.fetchall()]
+    conn.close()
+    return input
