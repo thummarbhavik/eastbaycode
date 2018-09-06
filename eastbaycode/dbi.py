@@ -1,5 +1,5 @@
-from eastbaycode import config
 import MySQLdb
+from eastbaycode import config
 
 # Config MySQL
 def connection():

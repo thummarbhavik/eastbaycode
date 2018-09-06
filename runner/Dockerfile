@@ -1,5 +1,5 @@
 FROM python
 ADD . /code
 WORKDIR /code
-RUN pip install docker
+RUN pip install -r requirements.txt
 CMD ["python","rundocker.py"]
