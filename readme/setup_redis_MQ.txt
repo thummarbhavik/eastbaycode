@@ -1,0 +1,45 @@
+MAC 
+Install:
+	brew install redis
+	
+Start redis
+	redis-server
+Start with protected-mode on
+	redis-server --protected-mode no
+
+Stop redis
+	ctrl + C 
+	
+Restart
+	brew services restart redis
+	
+Config file: to change the bind IP or protected-mode
+	/usr/local/etc/redis.config
+	
+Uninstall redis
+	brew uninstall redis
+Delete its files
+	rm ~/Library/LaunchAgents/homebrew.mxcl.redis.plist
+
+Ubuntu:
+Install:
+	sudo apt install redis-server
+
+Start redis: by default redis is on on Ubuntu. 
+
+Disable: 
+	sudo systemctl disable redis
+
+Start the redis server: 
+	sudo /etc/init.d/redis-server start
+Restart:
+	sudo /etc/init.d/redis-server restart
+Stop
+	sudo /etc/init.d/redis-server stop
+
+Config file location
+	sudo nano /etc/redis/redis.conf
+
+Ref:
+https://medium.com/@petehouston/install-and-config-redis-on-mac-os-x-via-homebrew-eb8df9a4f298
+https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-18-04
