@@ -1,10 +1,10 @@
 import json
 import time
 from flask import render_template, request
-from eastbaycode import app
-from eastbaycode.dbi import connection, getProblems, getTestCase
-from eastbaycode.runner import *
-from eastbaycode.msgqueue import push_msg, get_result
+from app import app
+from app.dbi import connection, getProblems, getTestCase
+from app.runner import *
+from app.msgqueue import push_msg, get_result
 
 @app.route("/index")
 def hello():

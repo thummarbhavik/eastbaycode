@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 
 dump.rdb
+.flaskenv
 
 # C extensions
 *.so
