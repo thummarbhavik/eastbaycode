@@ -13,9 +13,9 @@ if args.key == 'train':
         names = json.load(f)
     output_list = []
     for name in names:
-        data = subprocess.check_output(['python3',args.file_name,name['name']])
+        data = subprocess.check_output(['python3',args.file_name,name])
         data = data.decode("utf-8")
         print(data)
-        output_list.append(data) 
+        output_list.append(data)
     with open(args.output_json,'w') as outfile:
         json.dump(output_list,outfile)
