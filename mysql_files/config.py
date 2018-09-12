@@ -10,5 +10,5 @@ class Config:
             self.dbhost = "localhost"
             self.dbuser = "root"
             self.dbpw = "Hanoi123"
-            self.dbname = "eastbaycode"
+            self.dbname = "ebcode"
             self.dbport = 3306
