@@ -1,0 +1,15 @@
+version: '3'
+services:
+  webapp:
+    build: webapp
+    ports:
+    - "5000:5000"
+    volumes:
+    - ./webapp/:/code
+    - logvolume01:/var/log
+    links:
+    - redis
+  redis:
+    image: redis
+volumes:
+  logvolume01: {}

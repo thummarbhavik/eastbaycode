@@ -3,4 +3,4 @@ WORKDIR /app
 ADD . /app
 RUN pip install --trusted-host pypi.python.org -r requirements.txt 
 ENV NAME env
-CMD ["python", "ebcode.py"]
+CMD ["python", "ebc.py"]
