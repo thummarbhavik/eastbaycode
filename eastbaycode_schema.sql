@@ -68,7 +68,6 @@ DROP TABLE IF EXISTS eastbaycode.sub_results;
 	FOREIGN KEY (failed_test_id) REFERENCES testcases(id)
 	);
 	
-
-
+INSERT INTO eastbaycode.users(
 	
 

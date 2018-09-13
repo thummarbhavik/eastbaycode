@@ -5,6 +5,10 @@ __pycache__/
 
 dump.rdb
 .flaskenv
+config.py
+ssl.crt
+ssl.key
+app/config.py
 
 # C extensions
 *.so
