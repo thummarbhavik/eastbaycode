@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Courses Detaila</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-social/5.1.1/bootstrap-social.min.css">
+    <link href="bootstrap-social.css" rel="stylesheet" >
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">EastBayCode</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li><a href="course_view.html">Courses</a></li>
+            <li><a href="coffee.html">Problems</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            {% if current_user.is_anonymous %}
+            <li><a href="login"><span class="glyphicon glyphicon-log-in" style="padding:0px 5px;"></span>Login</a></li>
+            {% else %}
+            <li><img src="{{current_user.avatar}}?sz=128" id='avatar'
+                style="width: 45px; height: 45px; border-radius: 50%;"
+                alt="{{current_user.name}}"></li>
+            <li><a href="#">{{current_user.name}}</a></li>
+            <li><a href="{{ url_for('logout')}}">Logout</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% block body %}{% endblock %}
+</body>
+</html>
