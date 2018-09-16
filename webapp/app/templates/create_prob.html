@@ -6,19 +6,18 @@
         <h1>Create New Question</h1>
         <form action="" method="post">
             {{ form.hidden_tag() }}
-            <p>
-                {{ form.title.label}}<br>
-                {{ form.title(cols=80, rows=40)}}<br>
-                {{ form.question.label }}<br>
-                {{ form.question(cols=80, rows=5) }}<br>
-                {{ form.version.label }}<br>
-                {{ form.version(cols=80, row=40) }}<br>
-                {{ form.solution.label }}<br>
-                {{ form.solution(cols=80, rows=10) }}<br>
-                {% for error in form.question.errors %}
-                <span style='color:red;'>[{{ error }}]</span>
-                {% endfor %}
-            </p>
+            {{ form.title.label}}<br>
+            {{ form.title(cols=80, rows=40)}}<br>
+            {{ form.question.label }}<br>
+            {{ form.question(cols=80, rows=5) }}<br>
+            {{ form.version.label }}<br>
+            {{ form.version(cols=80, row=40) }}<br>
+            {{ form.solution.label }}<br>
+            {{ form.solution(cols=80, rows=10) }}<br>
+            {{ form.testcases }}<br>
+            {% for error in form.question.errors %}
+            <span style='color:red;'>[{{ error }}]</span>
+            {% endfor %}
             <p>{{ form.submit() }}</p>
         </form>
 </div>

@@ -6,7 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from app import app
 from app import db
 from app.models import Problems, Users, TestCases, Examples, Courses, Assignments
-from app.forms import QuestionForm
+from app.forms import QuestionForm, TestCaseForm
 from app.login_google import get_google_auth
 from config import Config
 from requests.exceptions import HTTPError
@@ -39,12 +39,16 @@ def show_assignments(course_id):
 @login_required
 def create_question():
     form = QuestionForm()
+    tc_form = TestCaseForm()
 #   if current_user.can(Permission.WRITE_ARTICLES) and \
     if form.validate_on_submit():
         problem = Problems(title=form.title.data, question=form.question.data,
                             version=form.version.data, solution=form.solution.data,
                             creator=current_user._get_current_object())
-        db.session.add(problem)
+        for t in form.testcases.data:
+            testcase = TestCases(input=t['input'])
+            problem.testcases.append(testcase)
+            db.session.add(problem)
         db.session.commit()
         flash('Your question is created!')
         return redirect(url_for('create_question'))
@@ -96,12 +100,6 @@ def callback():
             return redirect(url_for('index'))
         return 'Could not fetch your information.'
 
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('index'))
-
 @app.route("/problem/<int:id>", methods= ['GET', 'POST'])
 def displayTextEditor(id):
     code = ''
@@ -129,3 +127,16 @@ def displayTextEditor(id):
         # return redirect(url_for(displayTextEditor))
     return render_template("text_editor.html", code=code, inputs=testcase,
                             problem=problem)
+
+@app.route('/problems')
+@login_required
+def show_problems():
+    user = Users.query.filter_by(id=current_user._get_current_object().id).first()
+    problems = user.problems.all()
+    return render_template('show_problems.html', problems=problems)
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))

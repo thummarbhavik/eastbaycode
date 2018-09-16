@@ -9,6 +9,8 @@ config.py
 ssl.crt
 ssl.key
 app/config.py
+../.DS_Store
+../env/
 
 # C extensions
 *.so
