@@ -7,6 +7,18 @@ from app import login
 def load_user(id):
     return Users.query.get(int(id))
 
+# association table for Users and Courses (many-to-many relationship)
+registrations = db.Table('registrations',
+                        db.Column('student_id', db.Integer, db.ForeignKey('users.id')),
+                        db.Column('course_id', db.Integer, db.ForeignKey('courses.id'))
+                        )
+
+# association table for Assignments and Problems (many-to-many relationship)
+assignments_problems = db.Table('assignments_problems',
+                            db.Column('assignment_id', db.Integer, db.ForeignKey('assignments.id')),
+                            db.Column('problem_id', db.Integer, db.ForeignKey('problems.id'))
+                            )
+
 class Users(UserMixin, db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
@@ -18,6 +30,10 @@ class Users(UserMixin, db.Model):
     tokens = db.Column(db.Text)
     registered_date = db.Column(db.DateTime, default=datetime.utcnow)
     problems = db.relationship("Problems", backref='creator', lazy='dynamic')
+    courses = db.relationship("Courses", secondary=registrations,
+                              backref=db.backref('student', lazy='dynamic'),
+                              lazy='dynamic')
+    professor = db.relationship("Courses", backref='professor', lazy='dynamic')
 
     def __repr__(self):
         return '<Users {0} {1} {2} {3}>'.format(self.id, self.name,
@@ -31,6 +47,7 @@ class Problems(db.Model):
     version = db.Column(db.Integer)
     question = db.Column(db.Text())
     solution = db.Column(db.Text())
+    examples = db.relationship("Examples", backref='problem', lazy='dynamic')
     testcases = db.relationship("TestCases", backref='problem', lazy='dynamic')
 
     def __repr__(self):
@@ -57,3 +74,36 @@ class TestCases(db.Model):
     def __repr__(self):
         return "<TestCases {0} {1} {2}".format(self.problem_id,
                 self.input, self.output)
+
+class Courses(db.Model):
+    __tablename__ = 'courses'
+    id = db.Column(db.Integer, nullable=False, primary_key=True)
+    title = db.Column(db.String(120), nullable=False)
+    professor_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    startdate = db.Column(db.Date)
+    enddate = db.Column(db.Date)
+    semester = db.Column(db.String(120))
+    assignments = db.relationship("Assignments", backref='course', lazy='dynamic')
+
+    def professor(self):
+        professor = Users.query.filter(self.professor_id==Users.id).first()
+        return professor.name
+
+    def __repr__(self):
+        return "<Courses {0} {1} {2}".format(self.title, self.professor_id,
+                                            self.semester)
+
+class Assignments(db.Model):
+    __tablename__  = 'assignments'
+    id = db.Column(db.Integer, nullable=False, primary_key=True)
+    course_id = db.Column(db.Integer, db.ForeignKey('courses.id'), nullable=False)
+    startdate = db.Column(db.Date)
+    enddate = db.Column(db.Date)
+    grade = db.Column(db.Integer)
+    problems = db.relationship("Problems", secondary=assignments_problems,
+                                backref=db.backref('assignment', lazy='dynamic'),
+                                lazy='dynamic'
+                                )
+
+    def __repr__(self):
+        return "<Assignments {0} {1}>".format(course_id, problems)

@@ -12,4 +12,8 @@ services:
       - MYSQL_DATABASE=ebcode
       - MYSQL_USER=ebcode
       - MYSQL_PASSWORD=password
-      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=password   
+  redis:
+    image: redis:4.0.5-alpine
+    hostname: redis
+    

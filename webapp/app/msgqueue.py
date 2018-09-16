@@ -1,6 +1,6 @@
 import redis
 
-con_redis = redis.Redis(host="localhost", port=6379, db=0)
+con_redis = redis.Redis(host="eastbaycode_redis_1", port=6379, db=0)
 
 # method to push the code into queue
 def push_msg(qname, msg):
