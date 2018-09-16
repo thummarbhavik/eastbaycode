@@ -10,6 +10,7 @@ from app.forms import QuestionForm
 from app.login_google import get_google_auth
 from config import Config
 from requests.exceptions import HTTPError
+# from app.msgqueue import push_msg, get_result
 
 @app.route('/')
 @login_required
