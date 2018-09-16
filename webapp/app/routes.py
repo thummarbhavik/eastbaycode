@@ -1,11 +1,11 @@
 import json
 import time
 from flask import render_template, flash, request, redirect, url_for, session
-from flask_login import login_required, login_user, current_user
+from flask_login import login_required, login_user, current_user, logout_user
 from flask_debugtoolbar import DebugToolbarExtension
 from app import app
 from app import db
-from app.models import Problems, Users
+from app.models import Problems, Users, TestCases, Examples, Courses, Assignments
 from app.forms import QuestionForm
 from app.login_google import get_google_auth
 from config import Config
@@ -16,7 +16,26 @@ from requests.exceptions import HTTPError
 def index():
     return render_template('index.html')
 
+@app.route('/courses/student_<int:student_id>')
+@login_required
+def show_courses(student_id):
+    # show the courses that User takes
+    # get the course list from database based on user id
+    student = Users.query.filter_by(id=student_id).first()
+    course = student.courses.all()
+
+    return  render_template("course_view.html", course=course)
+
+@app.route("/course/<int:course_id>")
+@login_required
+def show_assignments(course_id):
+    course = Courses.query.filter_by(id=course_id).first()
+    assignments = course.assignments.all()
+
+    return render_template("assignments.html", course=course, assignments=assignments)
+
 @app.route('/create', methods=['GET', 'POST'])
+@login_required
 def create_question():
     form = QuestionForm()
 #   if current_user.can(Permission.WRITE_ARTICLES) and \
@@ -32,8 +51,8 @@ def create_question():
 
 @app.route('/login')
 def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
+    # if current_user.is_authenticated:
+    #     return redirect(url_for('index'))
     google = get_google_auth()
     auth_url, state = google.authorization_url(Config.AUTH_URI, access_type='offline')
     session['oauth_state'] = state
@@ -82,23 +101,30 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+@app.route("/problem/<int:id>", methods= ['GET', 'POST'])
+def displayTextEditor(id):
+    code = ''
+    result = ''
+    problem = Problems.query.filter_by(id=id).first()
+    testcase = problem.testcases.all()
 
-# @app.route("/", methods= ['GET', 'POST'])
-# def displayTextEditor():
-#     code = ''
-#     result = ''
-#     problem = getProblems(1)
-#     ex_len = len(problem['example'])
-#     if request.method == 'POST':
-#         inputs = getTestCase(1)
-#         code = request.form['code']
-#         # result = runcode(code, inputs) - just for subprocess.run
-#         # push msg to redis queue
-#         msg = json.dumps({"code": code, "inputs": inputs,
-#                           "prototype": "def sayHello(s)","handle": 38})
-#         push_msg(qname="msgQueue", msg=msg)
-#         time.sleep(10)
-#         result = get_result(qname="result")
-#
-#     return render_template("text_editor.html", code=code, result=result,
-#                             problem=problem, ex_len=ex_len)
+    # convert the elements in input into input_list
+    input_list = []
+    for t in testcase:
+        input_list.append(t.input)
+    print(input_list)
+
+    if request.method == 'POST':
+        code = request.form['code']
+
+        # result = runcode(code, inputs) - just for subprocess.run
+        # push msg to redis queue
+        msg = json.dumps({"code": code, "inputs": input_list,
+                          "prototype": "def sayHello(s)","handle": 38})
+        # push_msg(qname="msgQueue", msg=msg)
+        # time.sleep(10)
+        # result = get_result(qname="result")
+        # inputs = problem.testcases.all()
+        # return redirect(url_for(displayTextEditor))
+    return render_template("text_editor.html", code=code, inputs=testcase,
+                            problem=problem)
