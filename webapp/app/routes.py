@@ -96,7 +96,8 @@ def create_assignment():
 @login_required
 def profile():
     # show avatar, name, email address
-    pass
+    user = Users.query.filter_by(id=current_user._get_current_object().id).first()
+    return render_template('profile.html', user=user)
 
 @app.route('/login')
 def login():

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container">
+    <table>
+        <tr>
+            <td><img src="{{ user.avatar }}?sz=128"></td>
+            <td>
+                <h2>Name: {{user.name}}</h2><br>
+                <h4>Email: {{user.email}}</h4><br>
+                <h4>Registered Date: {{user.registered_date}}</h4>
+            </td>
+        </tr>
+    </table>
+</div>
+
+{% endblock %}

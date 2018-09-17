@@ -47,7 +47,7 @@
             <li><img src="{{current_user.avatar}}?sz=128" id='avatar'
                 style="width: 45px; height: 45px; border-radius: 50%;"
                 alt="{{current_user.name}}"></li>
-            <li><a href="#">{{current_user.name}}</a></li>
+            <li><a href="/profile">{{current_user.name}}</a></li>
             <li><a href="{{ url_for('logout')}}">Logout</a></li>
             {% endif %}
         </ul>
