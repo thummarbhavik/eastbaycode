@@ -31,8 +31,14 @@
             <a class="navbar-brand" href="#">EastBayCode</a>
         </div>
         <ul class="nav navbar-nav">
+            {% if current_user.is_anonymous %}
+            <li><a href="#">All course available</a></li>
+            {% else %}
             <li><a href="/courses">Courses</a></li>
             <li><a href="/problems">Problems</a></li>
+            <li><a href="/create/course">Create Course</a></li>
+            <li><a href="/create">Create Question</a></li>
+            {% endif %}
         </ul>
         <ul class="nav navbar-nav navbar-right">
             {% if current_user.is_anonymous %}
