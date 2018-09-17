@@ -3,7 +3,8 @@ import os
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
 
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://username:password@localhost/database'
+#    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://username:password@localhost/database'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://ebcode:password@eastbaycode_db_1/ebcode'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     CLIENT_ID = "yourclient_id_here.apps.googleusercontent.com"
