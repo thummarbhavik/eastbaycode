@@ -9,7 +9,8 @@ config.py
 ssl.crt
 ssl.key
 app/config.py
-readme/.DS_Store
+.DS_Store
+env/
 
 
 # C extensions

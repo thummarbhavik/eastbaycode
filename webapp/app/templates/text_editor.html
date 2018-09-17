@@ -1,39 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Courses Detaila</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <style>
-        #editor {
-            /** Setting height is also important, otherwise editor wont showup**/
-            height: 300px;
-            /* width: 500px; */
-            margin: 0px 0px 0px 0px;
-            }
-        .container{
-            margin:auto;
-            max-width:900px;
-        }
-        </style>
-    </head>
-    <body>
-        <nav class="navbar navbar-inverse">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">EastBayCode</a>
-            </div>
-            <ul class="nav navbar-nav">
-                <li><a href="course_view.html">Courses</a></li>
-                <li><a href="coffee.html">Problems</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-            </ul>
+{% extends "base.html" %}
 
-        </nav>
+{% block body %}
         <div class="container">
             <div class="row well">
                 <h4>CS1 -> Assignment 3 -> Problem 3</h4>
@@ -41,7 +8,7 @@
             <div class="row well">
                 <p><strong>Question {{problem.id}}: {{problem.title}}</strong></p>
                 <p>{{problem.question}}</p>
-                {% for e in problem['example'] %}
+                {% for e in problem.examples %}
                 <p><b>Example {{e['id']}}: </b></p>
                 <ul>
                     <p><strong>Input:</strong> {{e['input']}}</p>
@@ -65,7 +32,11 @@
                     <br>
                 </div>
             </form>
-                <p>{{result}}</p>
+                {% for i in inputs %}
+                <p>Input {{ i.id}}: {{ i.input }}</p>
+                {% endfor %}
+                {{ result }}
+
                 <br><br><br><br>
     </div>
     <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
@@ -85,6 +56,4 @@
             }
 
     </script>
-</body>
-
-</html>
+{% endblock %}

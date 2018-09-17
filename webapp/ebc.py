@@ -1,6 +1,6 @@
 from app import app
 from app import db
-from app.models import Users, Problems, Examples, TestCases
+from app.models import Users, Problems, Examples, TestCases, Courses, Assignments
 
 
 
@@ -11,4 +11,5 @@ def make_shell_context():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, ssl_context=('./ssl.crt', './ssl.key'))
+    app.run(debug=True, ssl_context=('./ssl.crt', './ssl.key'), 
+        host='0.0.0.0')

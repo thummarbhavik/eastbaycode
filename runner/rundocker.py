@@ -3,8 +3,9 @@ import redis
 import time
 import json
 
+time.sleep(10)
 def connection():
-    conn = redis.Redis(host="134.154.77.152", port=6379, db=0)
+    conn = redis.Redis(host="eastbaycode_redis_1", port=6379, db=0)
     return conn
 
 def build_and_run_submit(code, inputs):
@@ -25,16 +26,22 @@ def build_and_run_submit(code, inputs):
     return result
 
 def get_a_job(qname):
-    conn = redis.Redis(host="134.154.77.152", port=6379, db=0)
-    result = (conn.lpop(qname)).decode('utf-8')
+    conn = connection()
+    result = conn.lpop(qname)
     if result != None:
+        result = result.decode('utf-8')
         return result
 
 def send_result(qname, msg):
     conn = connection()
     conn.rpush(qname, msg)
 
-job = json.loads(get_a_job(qname = "msgQueue"))
-print(type(job))
-result = build_and_run_submit(code=job['code'], inputs=job['inputs'])
-send_result(qname="result", msg=result)
+while True:
+    job = get_a_job(qname = "work")
+    if job:
+        job = json.loads(job) 
+        result = build_and_run_submit(code=job['code'], inputs=job['inputs'])
+        send_result(qname="result", msg=result)
+    else:
+        time.sleep(10)
+        print("No jobs anymore")
