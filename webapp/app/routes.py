@@ -159,18 +159,15 @@ def displayTextEditor(id):
 
     if request.method == 'POST':
         code = request.form['code']
+        input_list=["bhavik"]
 
-        # result = runcode(code, inputs) - just for subprocess.run
-        # push msg to redis queue
-        msg = json.dumps({"code": code, "inputs": input_list,
-                          "prototype": "def sayHello(s)","handle": 38})
-        # push_msg(qname="msgQueue", msg=msg)
-        # time.sleep(10)
-        # result = get_result(qname="result")
+        push_msg(qname="work", msg=msg)
+        time.sleep(10)
+        result = get_result(qname="result")
         # inputs = problem.testcases.all()
         # return redirect(url_for(displayTextEditor))
     return render_template("text_editor.html", code=code, inputs=testcase,
-                            problem=problem)
+                            problem=problem,result = result)
 
 @app.route('/logout')
 @login_required
