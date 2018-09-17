@@ -10,7 +10,7 @@ from app.forms import QuestionForm, TestCaseForm, ExamplesForm, CourseForm
 from app.login_google import get_google_auth
 from config import Config
 from requests.exceptions import HTTPError
-# from app.msgqueue import push_msg, get_result
+from app.msgqueue import push_msg, get_result
 
 @app.route('/')
 @login_required
@@ -161,13 +161,17 @@ def displayTextEditor(id):
         code = request.form['code']
         input_list=["bhavik"]
 
+        # result = runcode(code, inputs) - just for subprocess.run
+        # push msg to redis queue
+        msg = json.dumps({"code": code, "inputs": input_list,
+                          "prototype": "def sayHello(s)","handle": 38})
         push_msg(qname="work", msg=msg)
         time.sleep(10)
         result = get_result(qname="result")
         # inputs = problem.testcases.all()
         # return redirect(url_for(displayTextEditor))
     return render_template("text_editor.html", code=code, inputs=testcase,
-                            problem=problem,result = result)
+                            problem=problem, result = result)
 
 @app.route('/logout')
 @login_required
