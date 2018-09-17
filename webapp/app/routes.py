@@ -6,7 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from app import app
 from app import db
 from app.models import Problems, Users, TestCases, Examples, Courses, Assignments
-from app.forms import QuestionForm
+from app.forms import QuestionForm, TestCaseForm, ExamplesForm, CourseForm
 from app.login_google import get_google_auth
 from config import Config
 from requests.exceptions import HTTPError
@@ -17,15 +17,17 @@ from requests.exceptions import HTTPError
 def index():
     return render_template('index.html')
 
-@app.route('/courses/student_<int:student_id>')
+@app.route('/courses')
 @login_required
-def show_courses(student_id):
+def show_courses():
     # show the courses that User takes
     # get the course list from database based on user id
-    student = Users.query.filter_by(id=student_id).first()
-    course = student.courses.all()
+    user = Users.query.filter_by(id=current_user._get_current_object().id).first()
+    course = user.courses.all()
+    created_courses = user.professor.all()
 
-    return  render_template("course_view.html", course=course)
+    return  render_template("course_view.html", course=course,
+                            created_courses=created_courses)
 
 @app.route("/course/<int:course_id>")
 @login_required
@@ -35,20 +37,66 @@ def show_assignments(course_id):
 
     return render_template("assignments.html", course=course, assignments=assignments)
 
+@app.route('/problems')
+@login_required
+def show_problems():
+    user = Users.query.filter_by(id=current_user._get_current_object().id).first()
+    problems = user.problems.all()
+    return render_template('show_problems.html', problems=problems)
+
+@app.route('/create/course', methods=['GET', 'POST'])
+@login_required
+def create_course():
+    form = CourseForm()
+    if form.validate_on_submit():
+        course = Courses(title=form.title.data,
+                         startdate=form.startdate.data,
+                         enddate = form.enddate.data,
+                         semester=form.semester.data,
+                         professor_id=current_user._get_current_object().id)
+        db.session.add(course)
+        db.session.commit()
+        flash("Your course is created!")
+        return redirect(url_for('show_courses'))
+    return render_template('create_course.html', form=form)
+
 @app.route('/create', methods=['GET', 'POST'])
 @login_required
+# create question and testcases for this problem
 def create_question():
     form = QuestionForm()
+    tc_form = TestCaseForm()
+    ex_form = ExamplesForm()
 #   if current_user.can(Permission.WRITE_ARTICLES) and \
     if form.validate_on_submit():
         problem = Problems(title=form.title.data, question=form.question.data,
                             version=form.version.data, solution=form.solution.data,
                             creator=current_user._get_current_object())
+        for t in form.testcases.data:
+            testcase = TestCases(input=t['input'])
+            problem.testcases.append(testcase)
+        for e in form.examples.data:
+            example = Examples(input=e['input'], output=e['output'])
+            problem.examples.append(example)
         db.session.add(problem)
         db.session.commit()
         flash('Your question is created!')
-        return redirect(url_for('create_question'))
+        return redirect(url_for('show_problems'))
     return render_template('create_prob.html', form=form)
+
+@app.route('/create/assignment')
+@login_required
+def create_assignment():
+    # choose course from drop down list
+    # choose problems from drop downlist
+
+    pass
+
+@app.route('profile')
+@login_required
+def profile():
+    # show avatar, name, email address
+    pass
 
 @app.route('/login')
 def login():
@@ -96,12 +144,6 @@ def callback():
             return redirect(url_for('index'))
         return 'Could not fetch your information.'
 
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('index'))
-
 @app.route("/problem/<int:id>", methods= ['GET', 'POST'])
 def displayTextEditor(id):
     code = ''
@@ -127,3 +169,8 @@ def displayTextEditor(id):
     return render_template("text_editor.html", code=code, inputs=testcase,
                             problem=problem,result = result)
 
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))

@@ -29,11 +29,11 @@ class Users(UserMixin, db.Model):
     avatar = db.Column(db.String(200))
     tokens = db.Column(db.Text)
     registered_date = db.Column(db.DateTime, default=datetime.utcnow)
-    problems = db.relationship("Problems", backref='creator', lazy='dynamic')
-    courses = db.relationship("Courses", secondary=registrations,
+    problems = db.relationship("Problems", cascade="all,delete", backref='creator', lazy='dynamic')
+    courses = db.relationship("Courses", cascade="all,delete", secondary=registrations,
                               backref=db.backref('student', lazy='dynamic'),
                               lazy='dynamic')
-    professor = db.relationship("Courses", backref='professor', lazy='dynamic')
+    professor = db.relationship("Courses", cascade="all,delete", backref='professor', lazy='dynamic')
 
     def __repr__(self):
         return '<Users {0} {1} {2} {3}>'.format(self.id, self.name,
@@ -47,11 +47,11 @@ class Problems(db.Model):
     version = db.Column(db.Integer)
     question = db.Column(db.Text())
     solution = db.Column(db.Text())
-    examples = db.relationship("Examples", backref='problem', lazy='dynamic')
-    testcases = db.relationship("TestCases", backref='problem', lazy='dynamic')
+    examples = db.relationship("Examples", cascade="all,delete", backref='problem', lazy='dynamic')
+    testcases = db.relationship("TestCases", cascade="all,delete", backref='problem', lazy='dynamic')
 
     def __repr__(self):
-        return "<Problems {}".format(self.question)
+        return "<Problems {}>".format(self.question)
 
 class Examples(db.Model):
     __tablename__ = "examples"
@@ -61,7 +61,7 @@ class Examples(db.Model):
     problem_id = db.Column(db.Integer, db.ForeignKey('problems.id'))
     # relationship with problem table
     def __repr__(self):
-        return "<Examples {0} {1}".format(self.input, self.output)
+        return "<Examples {0} {1}>".format(self.input, self.output)
 
 class TestCases(db.Model):
     __tablename__ = "testcases"
@@ -72,7 +72,7 @@ class TestCases(db.Model):
     flags = db.Column(db.Text())
 
     def __repr__(self):
-        return "<TestCases {0} {1} {2}".format(self.problem_id,
+        return "<TestCases {0} {1} {2}>".format(self.problem_id,
                 self.input, self.output)
 
 class Courses(db.Model):
@@ -83,14 +83,14 @@ class Courses(db.Model):
     startdate = db.Column(db.Date)
     enddate = db.Column(db.Date)
     semester = db.Column(db.String(120))
-    assignments = db.relationship("Assignments", backref='course', lazy='dynamic')
+    assignments = db.relationship("Assignments", cascade="all,delete", backref='course', lazy='dynamic')
 
     def professor(self):
         professor = Users.query.filter(self.professor_id==Users.id).first()
         return professor.name
 
     def __repr__(self):
-        return "<Courses {0} {1} {2}".format(self.title, self.professor_id,
+        return "<Courses {0} {1} {2}>".format(self.title, self.professor_id,
                                             self.semester)
 
 class Assignments(db.Model):
