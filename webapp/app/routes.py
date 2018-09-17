@@ -160,7 +160,6 @@ def displayTextEditor(id):
     if request.method == 'POST':
         code = request.form['code']
         input_list=["bhavik"]
-
         push_msg(qname="work", msg=msg)
         time.sleep(10)
         result = get_result(qname="result")
