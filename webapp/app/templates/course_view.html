@@ -10,11 +10,24 @@
             </div>
         </div>
         <div class="col-sm-9">
+            <h3>Attend courses</h3>
             {% for c in course %}
             <div class="row">
                 <div class="col-sm-9">
                     <div class="well">
                         <h3><a href="/course/{{c.id}}">{{c.title}} - {{c.semester}}</a></h3>
+                        <p>Professor: {{c.professor.name}}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <h3>Created Courses</h3>
+            {% for c in created_courses %}
+            <div class="row">
+                <div class="col-sm-9">
+                    <div class="well">
+                        <h3><a href="/course/{{c.id}}">{{c.title}} - {{c.semester}}</a></h3>
+                        <h5>Start date: {{c.startdate}} - End date: {{c.enddate}}</h5>
                         <p>Professor: {{c.professor.name}}</p>
                     </div>
                 </div>

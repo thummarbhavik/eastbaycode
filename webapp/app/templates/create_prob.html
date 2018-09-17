@@ -8,16 +8,26 @@
             {{ form.hidden_tag() }}
             {{ form.title.label}}<br>
             {{ form.title(cols=80, rows=40)}}<br>
+            {% for error in form.title.errors %}
+            <span style='color:red;'>[{{ error }}]</span>
+            {% endfor %}
             {{ form.question.label }}<br>
             {{ form.question(cols=80, rows=5) }}<br>
-            {{ form.version.label }}<br>
-            {{ form.version(cols=80, row=40) }}<br>
-            {{ form.solution.label }}<br>
-            {{ form.solution(cols=80, rows=10) }}<br>
-            {{ form.testcases }}<br>
             {% for error in form.question.errors %}
             <span style='color:red;'>[{{ error }}]</span>
             {% endfor %}
+            {{ form.version.label }}<br>
+            {{ form.version(cols=80, row=40) }}<br>
+            {% for error in form.version.errors %}
+            <span style='color:red;'>[{{ error }}]</span>
+            {% endfor %}
+            {{ form.solution.label }}<br>
+            {{ form.solution(cols=80, rows=10) }}<br>
+            {% for error in form.solution.errors %}
+            <span style='color:red;'>[{{ error }}]</span>
+            {% endfor %}
+            {{ form.examples }}
+            {{ form.testcases }}<br>
             <p>{{ form.submit() }}</p>
         </form>
 </div>
