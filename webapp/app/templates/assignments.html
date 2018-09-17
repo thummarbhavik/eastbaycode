@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block body %}
+        <div class="container">
+            <div class="jumbotron">
+                <h3>{{course.title}} - {{course.semester}}</h3><br>
+                <div class="all-courses">
+                <table id="courses-list" class="table table-hover  table-striped">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Assignment</th>
+                      <th scope="col" style="text-align:center;">Due Date</th>
+                      <th scope="col" style="text-align:center;">Grade</th>
+                      <th scope="col"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for assignment in assignments %}
+                    <tr id="assign1" class="accordion-toggle" data-toggle="collapse" data-parent="#courses" data-target=".courseDetails1">
+                      <th scope="row">{{assignment.id}}</th>
+                      <td><a href="#">Assignment {{assignment.id}}</a></td>
+                      <td style="text-align:center;">{{assignment.enddate}}</td>
+                      <td style="text-align:center;">{{assignment.grade}}</td>
+                      <td><i class="indicator glyphicon glyphicon-chevron-up pull-right"></i>
+                    </tr>
+
+                    {% for p in assignment.problems %}
+                    <tr>
+                        <td colspan="6" class="hiddenRow">
+                            <div class="accordion-body collapse courseDetails1" id="accordion1">
+                                <h5><a href="/problem/{{p.id}}">Problem {{p.id}}</a></h5>
+                                <p>{{p.question}}</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% endfor %}
+                  </tbody>
+                </table>
+        </div>
+    </div>
+<script type="text/javascript">
+$('#accordion1').on('shown.bs.collapse', function () {
+    $("#assign1 i.indicator").removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
+});
+$('#accordion1').on('hidden.bs.collapse', function () {
+    $("#assign1 i.indicator").removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");
+});
+
+$('#accordion2').on('shown.bs.collapse', function () {
+    $("#assign2 i.indicator").removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
+});
+$('#accordion2').on('hidden.bs.collapse', function () {
+    $("#assign2 i.indicator").removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");
+});
+
+$('#accordion3').on('shown.bs.collapse', function () {
+    $("#assign3 i.indicator").removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
+});
+$('#accordion3').on('hidden.bs.collapse', function () {
+    $("#assign3 i.indicator").removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");
+});
+
+</script>
+{% endblock %}
