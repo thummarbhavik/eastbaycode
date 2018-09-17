@@ -92,7 +92,7 @@ def create_assignment():
 
     pass
 
-@app.route('/profile')
+@app.route('profile')
 @login_required
 def profile():
     # show avatar, name, email address
