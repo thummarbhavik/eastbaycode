@@ -179,3 +179,10 @@ def displayTextEditor(id):
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+@app.route('runner/answer/<int:submissionid>', method = ['GET','POST'])
+def on_submission_result():
+    # lookup submission in db
+    # find user for submission
+    # send the user a message
+    rturn result
