@@ -2,6 +2,8 @@ from datetime import datetime
 from flask_login import UserMixin
 from app import db
 from app import login
+import redis
+import rq
 
 @login.user_loader
 def load_user(id):
