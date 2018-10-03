@@ -1,5 +1,6 @@
 from datetime import datetime
 from flask_login import UserMixin
+from app import app
 from app import db
 from app import login
 import redis
@@ -40,6 +41,23 @@ class Users(UserMixin, db.Model):
                                 backref='professor', lazy='dynamic')
     submission = db.relationship("Submissions", cascade="all,delete",
                                 backref='student', lazy='dynamic')
+
+    task = db.relationship('Task', backref='user', lazy='dynamic')
+
+    def launch_task(self, name, description, *args, **kwargs):
+        rq_job = app.task_queue.enqueue('app.tasks.' + name, self.id,
+                                                *args, **kwargs)
+        task = Task(id=rq_job.get_id(), name=name, description=description,
+                    user=self)
+        db.session.add(task)
+        return task
+
+    def get_tasks_in_progress(self):
+        return Task.query.filter_by(user=self, complete=False).all()
+
+    def get_task_in_progress(self, name):
+        return Task.query.filter_by(name=name, user=self,
+                                    complete=False).first()
 
     def __repr__(self):
         return '<Users {0} {1} {2} {3}>'.format(self.id, self.name,
@@ -118,6 +136,26 @@ class Assignments(db.Model):
 
     def __repr__(self):
         return "<Assignments {0} {1}>".format(course_id, problems)
+
+
+
+class Task(db.Model):
+    id = db.Column(db.String(36), primary_key=True)
+    name = db.Column(db.String(128), index=True)
+    description = db.Column(db.String(128))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    complete = db.Column(db.Boolean, default=False)
+
+    def get_rq_job(self):
+        try:
+            rq_job = rq.job.Job.fetch(self.id, connection=current_app.redis)
+        except (redis.exceptoins.RedisError, rq.exceptions.NoSuchJobError):
+            return None
+        return rq_job
+
+    def is_complete(self):
+        job = self.get_rq_job()
+        return job.meta.get('complete')
 
 class Submissions(db.Model):
     __tablename__ = 'submissions'
