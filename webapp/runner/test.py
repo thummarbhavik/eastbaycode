@@ -9,7 +9,7 @@ def main():
             "type": "string",
             "args": [{"name": "who", "type": "string"}]
         }]
-    job = {'code': """def SayHello(who)]:
+    job = {'code': """def SayHelloo(who):
     return "hello " + who
         """,
            'inputs': ['"Hien"', '"Paul"'],
