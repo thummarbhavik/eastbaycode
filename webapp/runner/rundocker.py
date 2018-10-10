@@ -31,6 +31,7 @@ def build_and_run_submit(job):
         return result
 
     code = encoder.make_program(job)
+    print(code)
     with open('docker2/submission.py', 'w') as program:
         program.write(code)
     copyfile("encode.py", "docker2/encode.py")
