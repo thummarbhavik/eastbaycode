@@ -1,34 +1,86 @@
 {% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% from "_render_field.html" import render_form_field %}
 
-{% block body %}
+{% block app_content %}
 <div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="well bs-component">
+                <form class="form-horizontal", method="post">
+                {{ form.csrf_token }}
+                <fieldset>
+                    <legend>Create New Question</legend>
+                    {{ render_form_field(form.title, placeholder=form.title.label.text) }}
+                    {{ render_form_field(form.question, placeholder=form.question.label.text) }}
+                    {{ render_form_field(proto_form.name, placeholder=proto_form.name.label.text) }}
+                    {{ render_form_field(proto_form.type, placeholder=proto_form.type.label.text) }}
+                    {{ render_form_field(proto_form.items, placeholder=proto_form.items.label.text) }}
 
-        <h1>Create New Question</h1>
-        <form action="" method="post">
-            {{ form.hidden_tag() }}
-            {{ form.title.label}}<br>
-            {{ form.title(cols=80, rows=40)}}<br>
-            {% for error in form.title.errors %}
-            <span style='color:red;'>[{{ error }}]</span>
-            {% endfor %}
-            {{ form.question.label }}<br>
-            {{ form.question(cols=80, rows=5) }}<br>
-            {% for error in form.question.errors %}
-            <span style='color:red;'>[{{ error }}]</span>
-            {% endfor %}
-            {{ form.version.label }}<br>
-            {{ form.version(cols=80, row=40) }}<br>
-            {% for error in form.version.errors %}
-            <span style='color:red;'>[{{ error }}]</span>
-            {% endfor %}
-            {{ form.solution.label }}<br>
-            {{ form.solution(cols=80, rows=10) }}<br>
-            {% for error in form.solution.errors %}
-            <span style='color:red;'>[{{ error }}]</span>
-            {% endfor %}
-            {{ form.examples }}
-            {{ form.testcases }}<br>
-            <p>{{ form.submit() }}</p>
-        </form>
+
+                        <!-- <button type="button" id="Add" class="btn btn-success btn-sm add"><span class="glyphicon glyphicon-plus"></span></button> -->
+                        <!-- <button type="button" id="Remove" class="btn btn-danger btn-sm remove"><span class="glyphicon glyphicon-minus"></span></button> -->
+                    </div>
+                    <div id='target' class="form-group">
+                           <label for="val1" class="col-lg-2 control-label">Text input</label>
+                           <div class="col-lg-8">
+                           <input class="form-control" name="val1" id='val1'  type="textarea"></input>
+	                       <button type='button' onclick='add_button()' class="btn btn-success btn-sm add"><span class="glyphicon glyphicon-plus"></span></button>
+                       </div>
+                    </div>
+                    <div class="col-lg-10 col-lg-offset-11">
+                        <button onclick="showPrototype()" type="button" name="button"
+                                class="btn btn-default" id="nextBtn"><strong>Next</strong></button>
+                    </div>
+                    <div id="editor">def {{ proto_form.name.data }}(items) {
+                        var x = "All this is syntax highlighted";
+                        return x;
+                    }
+
+                    </div>
+                </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js">
+        type="text/javascript" charset="utf-8"></script>
+        <script>
+        var textarea = $('#content');
+
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/twilight");
+        editor.getSession().setMode("ace/mode/python");
+
+        function doSubmit(){
+            var user_code = editor.getSession().getValue();
+            socket.emit('submit_code', {code: user_code});
+        }
+        var next_row = 2;
+        function delete_row(name)
+        {
+            var element = document.getElementById(name);
+            element.parentNode.removeChild(element);
+        }
+        function add_button()
+        {
+            var name = "val" + next_row;
+            next_row++;
+            var new_input = "<div class='col-sm-8 nopadding' id='" + name + "'><div class='form-group'>" +
+                            "<input class='form-control' name='" + name + "' type='textarea' />" +
+                            "<button type='button' onclick='delete_row(" +'"'  + name + '"' + ");' class='btn btn-danger btn-sm remove'>" +
+                            "<span class='glyphicon glyphicon-minus'></span></button></div></div>";
+            var parent = document.getElementById('target');
+            var child = document.createElement("div");
+
+            child.innerHTML = new_input;
+            parent.appendChild(child);
+            return 0;
+        }
+</script>
 {% endblock %}

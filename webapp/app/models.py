@@ -3,6 +3,7 @@ from flask_login import UserMixin
 from app import app
 from app import db
 from app import login
+from sqlalchemy.dialects.mysql import JSON
 import redis
 import rq
 
@@ -70,6 +71,8 @@ class Problems(db.Model):
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     version = db.Column(db.Integer)
     question = db.Column(db.Text())
+    # add new Column: prototype
+    prototype = db.Column(db.JSON)
     solution = db.Column(db.Text())
     examples = db.relationship("Examples", cascade="all,delete",
                                 backref='problem', lazy='dynamic')

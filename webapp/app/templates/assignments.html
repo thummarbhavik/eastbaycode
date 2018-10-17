@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
-{% block body %}
-        <div class="container">
+
+{% block app_content %}
             <button type="button" name="button"><a href="/create_assignment/{{course.id}}">Create Assignment</a></button>
             <div class="jumbotron">
                 <h3>{{course.title}} - {{course.semester}}</h3><br>
@@ -39,7 +39,6 @@
                   </tbody>
                 </table>
         </div>
-    </div>
 <script type="text/javascript">
 $('#accordion1').on('shown.bs.collapse', function () {
     $("#assign1 i.indicator").removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");

@@ -8,6 +8,7 @@ from app import db
 from app.models import Problems, Users, TestCases, Examples, Courses, Assignments
 from app.models import Submissions
 from app.forms import QuestionForm, TestCaseForm, ExamplesForm, CourseForm, AssignmentForm
+from app.forms import PrototypeForm, ArgsForm
 from app.login_google import get_google_auth
 from config import Config
 from requests.exceptions import HTTPError
@@ -68,6 +69,8 @@ def create_course():
 # create question and testcases for this problem
 def create_question():
     form = QuestionForm()
+    proto_form = PrototypeForm()
+    args_form = ArgsForm()
     tc_form = TestCaseForm()
     ex_form = ExamplesForm()
 #   if current_user.can(Permission.WRITE_ARTICLES) and \
@@ -85,14 +88,15 @@ def create_question():
         db.session.commit()
         flash('Your question is created!')
         return 'Your question is created!'
-    return render_template('create_prob.html', form=form)
+    return render_template('create_prob.html', form=form, proto_form=proto_form,
+                            args_form=args_form)
 
 @app.route('/create_assignment/<int:course_id>', methods=['GET', 'POST'])
 @login_required
 def create_assignment(course_id):
     # choose course from drop down list
     # choose problems from drop downlist
-    problems = Problems.query.filter_by(creator_id=current_user._get_current_object().id).all(  )
+    problems = Problems.query.filter_by(creator_id=current_user._get_current_object().id).all()
     form = AssignmentForm()
     form.problem.choices = problems
     if form.validate_on_submit():

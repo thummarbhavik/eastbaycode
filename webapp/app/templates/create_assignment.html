@@ -1,33 +1,35 @@
 {% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% from "_render_field.html" import render_field %}
+{% from "_render_field.html" import render_checkbox_field %}
 
-{% block body %}
-<div class="container">
-    <h1>Create New Assignment</h1>
-<form method="post">
-    {{ form.csrf_token }}
-    {{ form.problem.label }}<br>
-    {% for p in form.problem.choices %}
-    <input type="checkbox">{{ p.title }}<br>
-    {% endfor %}
-      <ul>
-          {% for error in form.problem.errors %}
-          <li style='color:red;'>{{ error }}</li>
-          {% endfor %}
-      </ul>
-    {{ form.startdate.label}}<br>
-    {{ form.startdate(size=48)}}<br>
-    {% for error in form.startdate.errors %}
-    <span style='color:red;'>[{{ error }}]</span>
-    {% endfor %}
-    {{ form.enddate.label}}<br>
-    {{ form.enddate(size=48)}}<br>
-    {% for error in form.enddate.errors %}
-    <span style='color:red;'>[{{ error }}]</span>
-    {% endfor %}
-    <p>{{ form.submit() }}</p>
+{% block app_content %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="well bs-component">
+            <form class="form-horizontal", method="post">
+            {{ form.csrf_token }}
+            <fieldset>
+                <legend>Create New Assignment</legend>
+                {{ form.problem.label }}<br>
+                {% for p in form.problem.choices %}
+                <input type="checkbox" class="form-check-input">{{ p.title }}<br>
+                {% endfor %}
+                  <ul>
+                      {% for error in form.problem.errors %}
+                      <li style='color:red;'>{{ error }}</li>
+                      {% endfor %}
+                  </ul>
+                  {{ render_field(form.startdate) }}
+                  {{ render_field(form.enddate) }}
+                <p>{{ form.submit() }}</p>
+            </fieldset>
+        </form>
+        </div>
 
-</form>
+    </div>
 
 </div>
+
 
 {% endblock %}
