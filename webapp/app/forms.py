@@ -39,8 +39,20 @@ class ArgsForm(FlaskForm):
                                  ('array', 'Array'),
                                  ('tuple', 'Tuple'),
                                  ('set', 'Set'),
-                                 ('bool', 'Boolean')])
-    items = FieldList(FormField(ItemForm), min_entries=1)
+                                 ('bool', 'Boolean')],
+                        description='argument type')
+    # items = FieldList(FormField(ItemForm), min_entries=1)
+    items = SelectField('item type', choices=[('none', 'None'),
+                                             ('integer', 'Integer'),
+                                             ('float', 'Float'),
+                                             ('string', 'String'),
+                                             ('list', 'List'),
+                                             ('dict', 'Dictionary'),
+                                             ('array', 'Array'),
+                                             ('tuple', 'Tuple'),
+                                             ('set', 'Set'),
+                                             ('bool', 'Boolean')],
+                                    description='arg item type')
 
 class PrototypeForm(FlaskForm):
     name = StringField('function name', validators=[DataRequired()])
@@ -75,7 +87,6 @@ class QuestionForm(FlaskForm):
     solution = TextAreaField("Solution", validators=[DataRequired()])
     # examples = FieldList(FormField(ExamplesForm), min_entries=1)
     # testcases = FieldList(FormField(TestCaseForm), min_entries=2)
-    submit = SubmitField('Submit')
 
 class CourseForm(FlaskForm):
     title = StringField("Course title", validators=[DataRequired()])

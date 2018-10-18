@@ -86,6 +86,7 @@ def create_question():
             problem.examples.append(example)
         db.session.add(problem)
         db.session.commit()
+        print(args_form.type.data)
         flash('Your question is created!')
         return 'Your question is created!'
     return render_template('create_prob.html', form=form, proto_form=proto_form,

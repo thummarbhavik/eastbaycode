@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 {% from "_render_field.html" import render_form_field %}
+{% from "_render_field.html" import render_args_field %}
+{% from "_render_field.html" import render_subfield %}
 
 {% block app_content %}
 <div class="container">
@@ -16,33 +18,26 @@
                     {{ render_form_field(proto_form.name, placeholder=proto_form.name.label.text) }}
                     {{ render_form_field(proto_form.type, placeholder=proto_form.type.label.text) }}
                     {{ render_form_field(proto_form.items, placeholder=proto_form.items.label.text) }}
-
-
+                    {{ render_subfield(args_form)}}
                         <!-- <button type="button" id="Add" class="btn btn-success btn-sm add"><span class="glyphicon glyphicon-plus"></span></button> -->
                         <!-- <button type="button" id="Remove" class="btn btn-danger btn-sm remove"><span class="glyphicon glyphicon-minus"></span></button> -->
+                    <br />
+                    <div class="form-group">
+                        <div class="col-lg-10 col-lg-offset-2">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
                     </div>
-                    <div id='target' class="form-group">
-                           <label for="val1" class="col-lg-2 control-label">Text input</label>
-                           <div class="col-lg-8">
-                           <input class="form-control" name="val1" id='val1'  type="textarea"></input>
-	                       <button type='button' onclick='add_button()' class="btn btn-success btn-sm add"><span class="glyphicon glyphicon-plus"></span></button>
-                       </div>
-                    </div>
-                    <div class="col-lg-10 col-lg-offset-11">
-                        <button onclick="showPrototype()" type="button" name="button"
-                                class="btn btn-default" id="nextBtn"><strong>Next</strong></button>
-                    </div>
+                    <br /><br /><br /><br />
                     <div id="editor">def {{ proto_form.name.data }}(items) {
                         var x = "All this is syntax highlighted";
                         return x;
                     }
-
                     </div>
                 </fieldset>
                 </form>
             </div>
         </div>
-    </div>
+</div>
 </div>
 {% endblock %}
 {% block scripts %}
@@ -81,6 +76,9 @@
             child.innerHTML = new_input;
             parent.appendChild(child);
             return 0;
+        }
+        function add_arg(){
+            $('.args').clone().appendTo('#target');
         }
 </script>
 {% endblock %}
