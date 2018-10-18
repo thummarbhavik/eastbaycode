@@ -8,10 +8,7 @@ from app import db
 from app.models import Problems, Users, TestCases, Examples, Courses, Assignments
 from app.models import Submissions
 from app.forms import QuestionForm, TestCaseForm, ExamplesForm, CourseForm, AssignmentForm
-<<<<<<< HEAD
 from app.forms import PrototypeForm, ArgsForm
-=======
->>>>>>> e8908ea0ef3cd7a871b9058b56f01f47a89f8d83
 from app.login_google import get_google_auth
 from config import Config
 from requests.exceptions import HTTPError
