@@ -140,7 +140,16 @@ class Assignments(db.Model):
     def __repr__(self):
         return "<Assignments {0} {1}>".format(course_id, problems)
 
+class Submissions(db.Model):
+    __tablename__ = 'submissions'
+    id = db.Column(db.Integer, nullable=False, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    problem_id = db.Column(db.Integer, db.ForeignKey('problems.id'), nullable=False)
+    submission = db.Column(db.Text())
+    sub_result = db.relationship("SubmissionResults", cascade="all,delete",
+                                  backref='submission', lazy='dynamic')
 
+<<<<<<< HEAD
 
 class Task(db.Model):
     id = db.Column(db.String(36), primary_key=True)
@@ -148,14 +157,21 @@ class Task(db.Model):
     description = db.Column(db.String(128))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     complete = db.Column(db.Boolean, default=False)
+=======
+    def __repr__(self):
+        return "<Submissions {} {} {}".format(self.student_id,
+                                    self.problem_id, self.submission)
+>>>>>>> e8908ea0ef3cd7a871b9058b56f01f47a89f8d83
 
-    def get_rq_job(self):
-        try:
-            rq_job = rq.job.Job.fetch(self.id, connection=current_app.redis)
-        except (redis.exceptoins.RedisError, rq.exceptions.NoSuchJobError):
-            return None
-        return rq_job
+class SubmissionResults(db.Model):
+    __tablename__ = 'submission_results'
+    id = db.Column(db.Integer, nullable=False, primary_key=True)
+    submission_id = db.Column(db.Integer, db.ForeignKey('submissions.id'), nullable=False)
+    status = db.Column(db.Boolean)
+    failed_test_id = db.Column(db.Integer)
+    output = db.Column(db.Text())
 
+<<<<<<< HEAD
     def is_complete(self):
         job = self.get_rq_job()
         return job.meta.get('complete')
@@ -181,6 +197,8 @@ class SubmissionResults(db.Model):
     failed_test_id = db.Column(db.Integer)
     output = db.Column(db.Text())
 
+=======
+>>>>>>> e8908ea0ef3cd7a871b9058b56f01f47a89f8d83
     def __repr__(self):
         return "<SubmissionResults {} {} {}".format(self.status,
                                     self.output, self.failed_test_id)
