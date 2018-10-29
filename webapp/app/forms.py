@@ -9,11 +9,11 @@ class MultiCheckboxField(SelectMultipleField):
     option_widget = widgets.CheckboxInput()
 
 class TestCaseForm(FlaskForm):
-    input = TextAreaField("Input", validators=[DataRequired()])
+    input = StringField("Input", validators=[DataRequired()])
 
 class ExamplesForm(FlaskForm):
-    input = TextAreaField("Input", validators=[DataRequired()])
-    output = TextAreaField("Output", validators=[DataRequired()])
+    input = StringField("Input")
+    output = StringField("Output")
 
 class ItemForm(FlaskForm):
     type = SelectField('item type', choices=[('none', 'None'),
@@ -76,17 +76,28 @@ class PrototypeForm(FlaskForm):
                                                      ('tuple', 'Tuple'),
                                                      ('set', 'Set'),
                                                      ('bool', 'Boolean')])
-    numArgs = IntegerField('No of args')
-    args = FieldList(FormField(ArgsForm), min_entries=2)
+    args = FieldList(FormField(ArgsForm), min_entries=5)
     # submit = SubmitField('Submit')
 
-class QuestionForm(FlaskForm):
+class ProblemForm(FlaskForm):
     title = StringField("Question title", validators=[DataRequired()])
     question = TextAreaField("Question content", validators=[DataRequired()], render_kw={'rows': 6})
     version = IntegerField("Version number")
     solution = TextAreaField("Solution", validators=[DataRequired()])
-    # examples = FieldList(FormField(ExamplesForm), min_entries=1)
-    # testcases = FieldList(FormField(TestCaseForm), min_entries=2)
+    prototype = FormField(PrototypeForm)
+    examples = FieldList(FormField(ExamplesForm), min_entries=2)
+    testcases = FieldList(FormField(TestCaseForm), min_entries=3)
+    submit = SubmitField('Submit')
+
+class EditProblemForm(FlaskForm):
+    title = StringField("Question title", validators=[DataRequired()])
+    question = TextAreaField("Question content", validators=[DataRequired()], render_kw={'rows': 6})
+    version = IntegerField("Version number")
+    solution = TextAreaField("Solution", validators=[DataRequired()])
+    prototype = FormField(PrototypeForm)
+    examples = FieldList(FormField(ExamplesForm), min_entries=2)
+    testcases = FieldList(FormField(TestCaseForm), min_entries=3)
+    submit = SubmitField('Submit')
 
 class CourseForm(FlaskForm):
     title = StringField("Course title", validators=[DataRequired()])

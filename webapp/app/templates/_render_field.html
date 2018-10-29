@@ -12,32 +12,36 @@
 </div>
 {% endmacro %}
 
-{% macro render_args_field(field) %}
-<div class="form-group">
-    <label for="{{ field.name }}" class="col-lg-2 control-label">{{ field.label.text }}</label>
-    <div class="col-lg-3">
-        {{ field(class_='form-control', **kwargs)|safe }}
-        <ul>
-            {% for error in field.errors %}
-                <li style='color:red;'>{{ error }}</li>
-            {% endfor %}
-        </ul>
+{% macro render_subfield(field) %}
+<div id='target'>
+    <div class="form-group form-inline" id="arg0">
+        {% for subfield in field %}
+            <div class="col-lg-3">
+            {{ subfield(class_='form-control', placeholder=subfield.label.text, **kwargs)|safe }}
+            <ul>
+                {% for error in subfield.errors %}
+                    <li style='color:red;'>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            </div>
+        {% endfor %}
     </div>
 </div>
 {% endmacro %}
 
-{% macro render_subfield(field) %}
-<div id='target'>
-    <div class="form-group form-inline args">
-        <label class="col-lg-2 control-label">Arguments 1</label>
+{% macro render_text(field) %}
+<div class="">
+    <div class="form-group form-inline">
         {% for subfield in field %}
-            <div class="col-lg-3">
+        <div class="col-lg-3">
             {{ subfield(class_='form-control', placeholder=subfield.label.text, **kwargs)|safe }}
-            </div>
-        {% endfor %}
-        <div class="input-group-btn">
-            <button type='button' onclick='add_arg();' class="btn btn-success btn-sm add"><span class="glyphicon glyphicon-plus"></span></button>
+            <ul>
+                {% for error in subfield.errors %}
+                    <li style='color:red;'>{{ error }}</li>
+                {% endfor %}
+            </ul>
         </div>
+        {% endfor %}
     </div>
 </div>
 {% endmacro %}

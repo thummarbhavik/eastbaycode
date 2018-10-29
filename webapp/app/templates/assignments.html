@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 
 {% block app_content %}
-            <button type="button" name="button"><a href="/create_assignment/{{course.id}}">Create Assignment</a></button>
             <div class="jumbotron">
+                <button type="button" name="button"><a href="/create_assignment/{{course.id}}">Create Assignment</a></button>
+
                 <h3>{{course.title}} - {{course.semester}}</h3><br>
                 <div class="all-courses">
                 <table id="courses-list" class="table table-hover  table-striped">

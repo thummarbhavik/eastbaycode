@@ -13,7 +13,7 @@
                 {{ form.csrf_token }}
                 {{ proto_form.csrf_token }}
                 <fieldset>
-                    <legend>Create New Question</legend>
+                    <legend>Edit Question</legend>
                     {{ render_form_field(form.title, placeholder=form.title.label.text) }}
                     {{ render_form_field(form.question, placeholder=form.question.label.text) }}
                     {{ render_form_field(proto_form.name, placeholder=proto_form.name.label.text) }}
@@ -39,7 +39,7 @@
                             {{ form.submit(class="btn btn-primary") }}
                         </div>
                     </div>
-                    <br /><br />
+                    <br /><br /><br /><br />
                 </fieldset>
                 </form>
             </div>
