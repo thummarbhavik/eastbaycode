@@ -1,0 +1,47 @@
+{% macro render_form_field(field) %}
+<div class="form-group">
+    <label for="{{ field.name }}" class="col-lg-2 control-label">{{ field.label.text }}</label>
+    <div class="col-lg-10">
+        {{ field(class_='form-control', **kwargs)|safe }}
+        <ul>
+            {% for error in field.errors %}
+                <li style='color:red;'>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro render_subfield(field) %}
+<div id='target'>
+    <div class="form-group form-inline" id="arg0">
+        {% for subfield in field %}
+            <div class="col-lg-3">
+            {{ subfield(class_='form-control', placeholder=subfield.label.text, **kwargs)|safe }}
+            <ul>
+                {% for error in subfield.errors %}
+                    <li style='color:red;'>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endmacro %}
+
+{% macro render_text(field) %}
+<div class="">
+    <div class="form-group form-inline">
+        {% for subfield in field %}
+        <div class="col-lg-3">
+            {{ subfield(class_='form-control', placeholder=subfield.label.text, **kwargs)|safe }}
+            <ul>
+                {% for error in subfield.errors %}
+                    <li style='color:red;'>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endmacro %}
