@@ -285,6 +285,15 @@ def submit_code(id):
     for t in testcase:
         input_list.append(t.input)
 
+    prototype = json.loads(problem.prototype)
+    fn_name = prototype['name']
+    rtype = prototype['type']
+    itemType = prototype['items']
+    parameters = []
+    for p in prototype['args']:
+        parameters.append(p['name'])
+    para_names = ', '.join(parameters)
+
     if request.method == 'POST':
         code = request.form['code']
         if code:
@@ -294,7 +303,8 @@ def submit_code(id):
             db.session.commit()
 
     return render_template("submission.html", code=code, inputs=testcase,
-                            problem=problem, result = result)
+                            fn_name=fn_name, rtype=rtype, itemType=itemType,
+                            para_names=para_names, problem=problem, result = result)
 
 @app.route("/test/<int:id>")
 def testAjax(id):

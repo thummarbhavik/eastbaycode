@@ -23,7 +23,11 @@
             <!-- <div class="row well"> -->
             <form id="process" method="POST" action="">
               <div class="row">
-                  <div id="editor">{{code}}</div>
+                  <div id="editor">def {{ fn_name }}({{ para_names }}):
+
+    # return type: {{ rtype }}
+    # return item type: {{ itemType }}
+    {{code}}</div>
               </div>
                 <input type="hidden" id="code" name="code" value="hello" />
                 <div class="row"><br>
