@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+<div class="container">
+    <div class="row well">
+        <p><strong>Question {{problem.id}}: {{problem.title}}</strong></p>
+        <p>{{problem.question}}</p>
+        {% for e in problem.examples %}
+        <p><b>Example {{e['id']}}: </b></p>
+        <ul>
+            <p><strong>Input:</strong> {{e['input']}}</p>
+            <p><strong>Output:</strong> {{e['output']}}</p>
+        </ul>
+        {% endfor %}
+    </div>
+    <div class="row">
+        <form id="process" method="POST" action="">
+        <div id="editor">def {{ fn_name }}({{ para_names }}):
+
+    # return type: {{ rtype }}
+    # return item type: {{ itemType }}
+
+        </div>
+        <input type="hidden" id="code" name="code" value="hello" />
+        <div class="row"><br>
+            <button class="btn btn-primary" type="button" name="edit"><a href="/edit_problem/{{ problem.id }}">Edit</a></button>
+            <button class="btn btn-primary pull-right" type="submit" name="run-code" style="width:120px; margin:0px 10px">Run Code</button>
+            <button class="btn btn-primary pull-right" type="button" onclick="doSubmit();" style="width:120px;">Submit</button>
+            <br>
+        </div>
+    </form>
+    </div>
+    <br><br><br><br>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js">
+        type="text/javascript" charset="utf-8"></script>
+<script>
+        var textarea = $('#content');
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/twilight");
+        editor.getSession().setMode("ace/mode/python");
+
+        $(document).ready(function(){
+            $('form').on('submit', function(event) {
+                $.ajax({
+                    data : {
+                        code : editor.getSession().getValue()
+                    },
+                    type : 'POST',
+                    url : '/_process'
+                })
+                .done(function(data){
+                    if (data.error){
+                        $('#errorAlert').text(data.error).show();
+                        $('#successAlert').hide();
+                    }
+                    else{
+                        $('#successAlert').text(data.code).show();
+                        $('#errorAlert').hide();
+                    }
+                });
+                event.preventDefault();
+            });
+        });
+
+</script>
+{% endblock %}

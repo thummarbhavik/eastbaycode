@@ -7,7 +7,8 @@ from app import app
 from app import db
 from app.models import Problems, Users, TestCases, Examples, Courses, Assignments
 from app.models import Submissions
-from app.forms import QuestionForm, TestCaseForm, ExamplesForm, CourseForm, AssignmentForm
+from app.forms import ProblemForm, TestCaseForm, ExamplesForm, CourseForm, AssignmentForm
+from app.forms import PrototypeForm, ArgsForm, EditProblemForm
 from app.login_google import get_google_auth
 from config import Config
 from requests.exceptions import HTTPError
@@ -67,32 +68,144 @@ def create_course():
 @login_required
 # create question and testcases for this problem
 def create_question():
-    form = QuestionForm()
-    tc_form = TestCaseForm()
-    ex_form = ExamplesForm()
+    form = ProblemForm()
+    proto_form = PrototypeForm()
+    args_form = ArgsForm()
 #   if current_user.can(Permission.WRITE_ARTICLES) and \
-    if form.validate_on_submit():
+    if request.method == 'POST':
+        # issue: add and form.validate_on_submit() it wont write into db
+        print("It's a post.\n")
+        for key,value in request.form.items():
+            print(key, ", ", value)
+
+        # build prototype json object
+        args = []
+        for item in form.prototype.args.data:
+            if item['name']:
+                arg = {'name': item['name'], 'type': item['type'], 'items': item['items']}
+                args.append(arg)
+        prototype = {'name': proto_form.name.data,
+                     'type': proto_form.type.data,
+                     'items': proto_form.items.data,
+                     'args': args}
+        print(prototype)
+        # convert to json object
+        prototype = json.dumps(prototype)
         problem = Problems(title=form.title.data, question=form.question.data,
                             version=form.version.data, solution=form.solution.data,
-                            creator=current_user._get_current_object())
+                            creator=current_user._get_current_object(), prototype=prototype)
         for t in form.testcases.data:
-            testcase = TestCases(input=t['input'])
-            problem.testcases.append(testcase)
+            if t['input']:
+                testcase = TestCases(input=t['input'])
+                problem.testcases.append(testcase)
         for e in form.examples.data:
-            example = Examples(input=e['input'], output=e['output'])
-            problem.examples.append(example)
+            if e['input']:
+                example = Examples(input=e['input'], output=e['output'])
+                problem.examples.append(example)
         db.session.add(problem)
         db.session.commit()
         flash('Your question is created!')
-        return 'Your question is created!'
-    return render_template('create_prob.html', form=form)
+        problem_id = problem.id
+        print(problem_id)
+        return redirect(url_for('show_prototype', id=problem_id))
+    return render_template('create_prob.html', form=form, proto_form=proto_form,
+                            args_form=args_form)
+
+@app.route("/show_prototype/<int:id>", methods= ['GET', 'POST'])
+def show_prototype(id):
+    code = ''
+    result = ''
+    problem = Problems.query.filter_by(id=id).first()
+    testcase = problem.testcases.all()
+
+    # convert the elements in input into input_list
+    input_list = []
+    for t in testcase:
+        input_list.append(t.input)
+
+    prototype = json.loads(problem.prototype)
+    fn_name = prototype['name']
+    rtype = prototype['type']
+    itemType = prototype['items']
+    parameters = []
+    for p in prototype['args']:
+        parameters.append(p['name'])
+    para_names = ', '.join(parameters)
+
+    if request.method == 'POST':
+        code = request.form['code']
+        if code:
+            # write code to solution section
+            pass
+
+    return render_template("show_prototype.html", code=code, inputs=testcase,
+                            fn_name=fn_name, rtype=rtype, itemType=itemType,
+                            para_names=para_names, problem=problem,
+                            result = result)
+
+@app.route("/edit_problem/<int:id>", methods= ['GET', 'POST'])
+def edit_problem(id):
+    form = EditProblemForm()
+    proto_form = PrototypeForm()
+    args_form = ArgsForm()
+    problem = Problems.query.filter_by(id=id).first()
+#   if current_user.can(Permission.WRITE_ARTICLES) and \
+    if request.method == 'POST':
+        # issue: add and form.validate_on_submit() it wont write into db
+        print("It's a post.\n")
+        for key,value in request.form.items():
+            print(key, ", ", value)
+
+        # build prototype json object
+        args = []
+        for item in form.prototype.args.data:
+            if item['name']:
+                arg = {'name': item['name'], 'type': item['type'], 'items': item['items']}
+                args.append(arg)
+        prototype = {'name': proto_form.name.data,
+                     'type': proto_form.type.data,
+                     'items': proto_form.items.data,
+                     'args': args}
+        print(prototype)
+        # convert to json object
+        prototype = json.dumps(prototype)
+
+        problem.title = form.title.data
+        problem.question = form.question.data
+        problem.version = form.version.data
+        problem.prototype = prototype
+
+        for t in form.testcases.data:
+            if t['input']:
+                testcase = TestCases(input=t['input'])
+                problem.testcases.append(testcase)
+        for e in form.examples.data:
+            if e['input']:
+                example = Examples(input=e['input'], output=e['output'])
+                problem.examples.append(example)
+        db.session.add(problem)
+        db.session.commit()
+        flash('Your question is edited!')
+        return redirect(url_for('show_prototype', id=id))
+    elif request.method == 'GET':
+        form.title.data = problem.title
+        form.question.data = problem.question
+        form.version.data = problem.version
+        prototype = json.loads(problem.prototype)
+        proto_form.name.data = prototype['name']
+        proto_form.type.data = prototype['type']
+        proto_form.items.data = prototype['items']
+        # need to add the args showing in edit page
+
+    return render_template('edit_problem.html', form=form, proto_form=proto_form,
+                            args_form=args_form)
 
 @app.route('/create_assignment/<int:course_id>', methods=['GET', 'POST'])
 @login_required
 def create_assignment(course_id):
     # choose course from drop down list
     # choose problems from drop downlist
-    problems = Problems.query.filter_by(creator_id=current_user._get_current_object().id).all(  )
+    problems = Problems.query.filter_by(creator_id=current_user._get_current_object().id).all()
     form = AssignmentForm()
     form.problem.choices = problems
     if form.validate_on_submit():
@@ -161,7 +274,7 @@ def callback():
         return 'Could not fetch your information.'
 
 @app.route("/problem/<int:id>", methods= ['GET', 'POST'])
-def displayTextEditor(id):
+def submit_code(id):
     code = ''
     result = ''
     problem = Problems.query.filter_by(id=id).first()
@@ -171,7 +284,6 @@ def displayTextEditor(id):
     input_list = []
     for t in testcase:
         input_list.append(t.input)
-    print(input_list)
 
     if request.method == 'POST':
         code = request.form['code']
@@ -181,19 +293,7 @@ def displayTextEditor(id):
             db.session.add(submission)
             db.session.commit()
 
-
-        # input_list=["bhavik"]
-        #
-        # # result = runcode(code, inputs) - just for subprocess.run
-        # # push msg to redis queue
-        # msg = json.dumps({"code": code, "inputs": input_list,
-        #                   "prototype": "def sayHello(s)","handle": 38})
-        # push_msg(qname="work", msg=msg)
-        # time.sleep(10)
-        # result = get_result(qname="result")
-        # # inputs = problem.testcases.all()
-        # # return redirect(url_for(displayTextEditor))
-    return render_template("text_editor.html", code=code, inputs=testcase,
+    return render_template("submission.html", code=code, inputs=testcase,
                             problem=problem, result = result)
 
 @app.route("/test/<int:id>")

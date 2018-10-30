@@ -71,6 +71,7 @@ class Problems(db.Model):
     version = db.Column(db.Integer)
     question = db.Column(db.Text())
     solution = db.Column(db.Text())
+    prototype = db.Column(db.JSON)
     examples = db.relationship("Examples", cascade="all,delete",
                                 backref='problem', lazy='dynamic')
     testcases = db.relationship("TestCases", cascade="all,delete",
