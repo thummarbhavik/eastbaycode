@@ -8,7 +8,7 @@ import requests
 
 
 
-def example(sid):
+def example(msg):
     #job = get_current_job()
     print('Staring task: ', sid)
     for i in range(5):
@@ -19,7 +19,7 @@ def example(sid):
     #job.save_meta()
 
     url = 'https://eastbaycode_webapp_1:5000/runner_done'
-    data = {'sid': sid}
+    data = {'msg': msg}
     r = requests.post(url = url, data = data, verify=False)
     print('Task completed: ', r)
 
