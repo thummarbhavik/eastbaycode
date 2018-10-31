@@ -296,15 +296,29 @@ def submit_code(id):
 
     if request.method == 'POST':
         code = request.form['code']
-        if code:
-            submission = Submissions(student_id=current_user._get_current_object().id,
-                                    problem_id=id, submission=code)
-            db.session.add(submission)
-            db.session.commit()
+        # do_suff(code, id, input_list, problem)
 
     return render_template("submission.html", code=code, inputs=testcase,
                             fn_name=fn_name, rtype=rtype, itemType=itemType,
-                            para_names=para_names, problem=problem, result = result)
+                            para_names=para_names, problem=problem, result = result,
+                            input_list=input_list, prototype=prototype)
+
+def do_suff(code):
+    if code:
+        submission = Submissions(student_id=current_user._get_current_object().id,
+                                problem_id=id, submission=code)
+        db.session.add(submission)
+        db.session.commit()
+        student_sub = {'code': code,
+                        'submission_id': submission.id,
+                        'inputs': input_list,
+                        'prototype':prototype,
+                        'session_id': request.sid}
+        student_sub = json.dumps(student_sub)
+        # send the code to Bhavik
+        app.task_queue.enqueue('Bhavik', student_sub)
+
+
 
 @app.route("/test/<int:id>")
 def testAjax(id):
@@ -320,13 +334,8 @@ def testAjax(id):
                             problem=problem, result = result)
 
 @app.route("/runner_done", methods=['POST'])
-def runner_done():
-    data = request.form
-    sid = data['sid']
-    json = {}
-    socketio.emit('answer', json, room=sid)
-    print("The runner is done.")
-    return "thanks"
+def runner_done(msg):
+    print(msg)
 
 
 @app.route('/logout')
@@ -359,5 +368,29 @@ def handle_my_custom_event(json):
     emit('answer', json)
 
 @socketio.on('submit_code')
-def handle_my_custom_event(json):
-    rq_job = app.task_queue.enqueue('app.tasks.example', request.sid)
+def handle_my_custom_event(msg):
+    problem_id = msg['problem_id']
+    problem = get_problem(problem_id)
+    prototype = problem.prototype
+    testcase = problem.testcases.all()
+    # convert the elements in input into input_list
+    input_list = []
+    for t in testcase:
+        input_list.append(t.input)
+    print(msg)
+    if msg['code']:
+        submission = Submissions(student_id=current_user._get_current_object().id,
+                                problem_id=msg['problem_id'], submission=msg['code'])
+        db.session.add(submission)
+        db.session.commit()
+
+        msg['submission_id'] = submission.id
+        msg['inputs'] = input_list
+        msg['prototype'] = prototype
+        msg['session_id'] = request.sid
+
+    rq_job = app.task_queue.enqueue('app.tasks.example', msg)
+
+def get_problem(id):
+    problem = Problems.query.filter_by(id=id).first()
+    return problem
