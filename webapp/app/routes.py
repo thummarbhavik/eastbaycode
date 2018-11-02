@@ -82,12 +82,16 @@ def create_question():
         args = []
         for item in form.prototype.args.data:
             if item['name']:
-                arg = {'name': item['name'], 'type': item['type'], 'items': item['items']}
+                arg = {'name': item['name'], 'type': item['type']}
+                if item['items'] != 'none':
+                    arg['items'] = item['items']
                 args.append(arg)
         prototype = {'name': proto_form.name.data,
                      'type': proto_form.type.data,
-                     'items': proto_form.items.data,
                      'args': args}
+        if proto_form.items.data != 'none':
+            prototype['items'] = {'type': proto_form.items.data}
+
         print(prototype)
         # convert to json object
         prototype = json.dumps(prototype)
@@ -126,7 +130,10 @@ def show_prototype(id):
     prototype = json.loads(problem.prototype)
     fn_name = prototype['name']
     rtype = prototype['type']
-    itemType = prototype['items']
+    if 'items' in prototype.keys():
+        itemType = prototype['items']['type']
+    else:
+        itemType = 'None'
     parameters = []
     for p in prototype['args']:
         parameters.append(p['name'])
@@ -160,12 +167,16 @@ def edit_problem(id):
         args = []
         for item in form.prototype.args.data:
             if item['name']:
-                arg = {'name': item['name'], 'type': item['type'], 'items': item['items']}
+                arg = {'name': item['name'], 'type': item['type']}
+                if item['items']:
+                    arg['items'] = item['items']
                 args.append(arg)
         prototype = {'name': proto_form.name.data,
                      'type': proto_form.type.data,
-                     'items': proto_form.items.data,
                      'args': args}
+        if proto_form.items.data:
+            prototype['items'] = proto_form.items.data
+
         print(prototype)
         # convert to json object
         prototype = json.dumps(prototype)
@@ -194,6 +205,7 @@ def edit_problem(id):
         prototype = json.loads(problem.prototype)
         proto_form.name.data = prototype['name']
         proto_form.type.data = prototype['type']
+        if 'items' in prototype.keys():
         proto_form.items.data = prototype['items']
         # need to add the args showing in edit page
 
