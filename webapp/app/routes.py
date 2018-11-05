@@ -206,7 +206,7 @@ def edit_problem(id):
         proto_form.name.data = prototype['name']
         proto_form.type.data = prototype['type']
         if 'items' in prototype.keys():
-        proto_form.items.data = prototype['items']
+            proto_form.items.data = prototype['items']
         # need to add the args showing in edit page
 
     return render_template('edit_problem.html', form=form, proto_form=proto_form,
@@ -300,7 +300,10 @@ def submit_code(id):
     prototype = json.loads(problem.prototype)
     fn_name = prototype['name']
     rtype = prototype['type']
-    itemType = prototype['items']
+    if 'items' in prototype.keys():
+        itemType = prototype['items']
+    else:
+        itemType = None
     parameters = []
     for p in prototype['args']:
         parameters.append(p['name'])
@@ -398,10 +401,11 @@ def handle_my_custom_event(msg):
 
         msg['submission_id'] = submission.id
         msg['inputs'] = input_list
-        msg['prototype'] = prototype
+        #print(prototype)
+        msg['prototype'] = json.loads(prototype)
         msg['session_id'] = request.sid
 
-    rq_job = app.task_queue.enqueue('app.tasks.example', msg)
+    rq_job = app.task_queue.enqueue('worker.runner', msg)
 
 def get_problem(id):
     problem = Problems.query.filter_by(id=id).first()

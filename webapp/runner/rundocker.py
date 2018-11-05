@@ -2,8 +2,10 @@ import docker
 import redis
 import time
 import json
+import ast
 from encode import *
 from shutil import copyfile
+import os
 
 
 def connection():
@@ -13,6 +15,8 @@ def connection():
 def build_and_run_submit(job):
     # create inputs and code files in docker2 directory
     result = {}
+    result['session_id'] = job['session_id']
+    result['submission_id'] = job['submission_id']
     encoder = Encoder(job['prototype'])
 
     # compile the code
@@ -30,20 +34,39 @@ def build_and_run_submit(job):
         result['error'] = compile_result
         return result
 
+
     code = encoder.make_program(job)
-    print(code)
-    with open('docker2/submission.py', 'w') as program:
+    path_to_submission = os.path.dirname(os.path.abspath(__file__)) + '/docker2/submission.py'
+
+    with open(path_to_submission, 'w') as program:
         program.write(code)
-    copyfile("encode.py", "docker2/encode.py")
+    path_to_encode =  os.path.dirname(os.path.abspath(__file__)) 
+    copyfile(path_to_encode + '/encode.py', path_to_encode + '/docker2/encode.py')
+
 
     client = docker.from_env()
     #handles=client.containers.run("ubuntu:latest","./bbt train sol.py input.json output.json")
-    handles=client.images.build(path="docker2",tag="latest")
+
+    path_to_docker2 =  os.path.dirname(os.path.abspath(__file__)) + '/docker2'
+    handles=client.images.build(path=path_to_docker2,tag="latest")
     # print(handles)
-    handles=client.containers.run("latest:latest", volumes = {"docker2":{"bind": "/code/output", "mode": "rw"}})
-    result = handles.decode('utf-8')
-    # print(handles)
-    #input("fdfgbbgfgb")
+
+
+    handles=client.containers.run("latest:latest", volumes = {"/home/bhavik/eastbaycode/webapp/runner/docker2/":{"bind": "/code/output", "mode": "rw"}})
+    #outputs = handles.decode('utf-8')
+    #print(outputs)
+    with open(path_to_docker2 + '/output.txt') as f:
+        outputs = json.load(f)
+    if os.path.exists(path_to_docker2 + "/output.txt"):
+        os.remove(path_to_docker2 + "/output.txt")
+    #print('from bind',outputs)
+    #outputs = ast.literal_eval(outputs)
+    result['outputs'] = outputs
+    outputs_last_index = len(outputs) - 1
+    if len(outputs) != len(job['inputs']) or outputs[outputs_last_index]['stderr'] != 'ok':
+        result['result'] = 'runtime_error'
+        return result
+    result['result'] = 'ok'
     return result
 
 def get_a_job(qname):
