@@ -10,7 +10,7 @@ import requests
 
 def example(msg):
     #job = get_current_job()
-    print('Staring task: ', sid)
+    print('Staring task: ', msg)
     for i in range(5):
         print(i)
         time.sleep(1)

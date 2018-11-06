@@ -9,7 +9,10 @@ class Encoder:
         # job contains prototype, code, inputs
         # output is a complete runnable program
         out = io.StringIO()
+        out.write("import json\n")
+        out.write("import io \n")
         out.write("from encode import Encoder\n")
+        out.write("from contextlib import redirect_stdout\n")
         out.write(job['code'])
         out.write("\n\ndef main():\n" "    inputs=")
         out.write(str(job['inputs']))
@@ -21,11 +24,26 @@ class Encoder:
         out.write("""
     outputs = []
     for input in inputs:
+        result = {}
+        result["input"] = input
         vars = encoder.decode_params(input)
-        rc = user_function(*vars)
+        try:
+            f = io.StringIO()
+            with redirect_stdout(f):
+                rc = user_function(*vars)
+        except (RuntimeError,TypeError, NameError) as e:
+            result['stderr'] = e
+            outputs.append(result)
+            break
         encoded = encoder.encode_return(rc)
-        outputs.append(encoded)
-  
+        result["answer"] = encoded
+        print(f.getvalue())
+        result["stdout"] = f.getvalue()
+        result["stderr"] = "ok"
+        outputs.append(result)
+    with open('/code/output/output.txt','w') as f:
+        json.dump(outputs,f)
+    print(outputs)
 if __name__ == "__main__":
     main()
         """)

@@ -21,7 +21,7 @@ services:
     hostname: redis
   runner:
     image: webapp-image
-    command: bash -c "/wait && rq worker -u redis://eastbaycode_redis_1:6379/0 tasks"
+    command: bash -c "/wait && rq worker -u redis://eastbaycode_redis_1:6379/0 -P /webapp/runner tasks"
             
     environment:
             WAIT_HOSTS: eastbaycode_redis_1:6379, eastbaycode_db_1:3306 

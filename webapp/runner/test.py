@@ -9,12 +9,16 @@ def main():
             "type": "string",
             "args": [{"name": "who", "type": "string"}]
         }]
-    job = {'code': """def SayHelloo(who):
+    job = {'code': """def SayHello(who):
+    print("stdout:",who)
+    #while True:
+     #   pass
     return "hello " + who
         """,
            'inputs': ['"Hien"', '"Paul"'],
            'prototype': protos[0]}
     result = build_and_run_submit(job)
+    print('from test',result)
     if result['result'] == 'compiler_error':
         print(result['error']['msg'])
         print(result['error']['text'])
