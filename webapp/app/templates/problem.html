@@ -42,7 +42,6 @@
     <script type="text/javascript" charset="utf-8">
     var socket = io.connect('https://localhost:5000/');
     socket.on('connect', function() {
-        socket.emit('my event', {data: 'I\'m connected!'});
     });
     socket.on('answer', function(data) {
         alert('got an answer!! ');
