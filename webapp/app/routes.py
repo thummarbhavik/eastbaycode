@@ -349,8 +349,11 @@ def testAjax(id):
                             problem=problem, result = result)
 
 @app.route("/runner_done", methods=['POST'])
-def runner_done(msg):
-    print(msg)
+def runner_done():
+    data = request.form
+    sid = data['sid']
+    json = {}
+    socketio.emit('answer', json, room = sid)
 
 
 @app.route('/logout')
@@ -377,10 +380,6 @@ def handle_aaa(json):
 @socketio.on('message')
 def handle_message(message):
     print('received message: ' + message)
-
-@socketio.on('my event')
-def handle_my_custom_event(json):
-    emit('answer', json)
 
 @socketio.on('submit_code')
 def handle_my_custom_event(msg):

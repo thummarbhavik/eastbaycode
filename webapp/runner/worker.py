@@ -15,7 +15,8 @@ def runner(job):
     result = build_and_run_submit(job)
     print(result)
     url = 'https://eastbaycode_webapp_1:5000/runner_done'
-    data = {'msg':result}
+    data = {'msg':result, 
+            'sid':job['session_id']}
     r = requests.post(url = url, data = data, verify = False)
     print('Task Completed: ',r)
     #if result['result'] == 'compiler_error':
