@@ -52,10 +52,10 @@ def build_and_run_submit(job):
     # print(handles)
 
 
-    handles=client.containers.run("latest:latest", volumes = {"/home/bhavik/eastbaycode/webapp/runner/docker2/":{"bind": "/code/output", "mode": "rw"}})
+    handles=client.containers.run("latest:latest", volumes = { "eastbaycode_output":{"bind": "/code/output", "mode": "rw"}})
     #outputs = handles.decode('utf-8')
     #print(outputs)
-    with open(path_to_docker2 + '/output.txt') as f:
+    with open(path_to_docker2 + '/output/output.txt') as f:
         outputs = json.load(f)
     if os.path.exists(path_to_docker2 + "/output.txt"):
         os.remove(path_to_docker2 + "/output.txt")
