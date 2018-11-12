@@ -57,6 +57,7 @@
         socket.emit('my event', {data: 'I\'m connected!'});
     });
     socket.on('answer', function(data) {
+        alert(data);
         alert('got an answer!! ');
     });
 </script>

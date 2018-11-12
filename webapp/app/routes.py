@@ -350,10 +350,14 @@ def testAjax(id):
 
 @app.route("/runner_done", methods=['POST'])
 def runner_done():
-    data = request.form
-    sid = data['sid']
-    json = {}
-    socketio.emit('answer', json, room = sid)
+    # request.get_json() method will retrive json data which will sent with post request. 
+    data = request.get_json()
+    sid = data['session_id']
+    result = data['result']
+    submission_id = data['submission_id']
+    output = data['outputs']
+    tt = len(output)
+    socketio.emit('answer', tt, room = sid)
 
 
 @app.route('/logout')
